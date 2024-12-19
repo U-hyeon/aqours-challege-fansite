@@ -45,14 +45,26 @@
                     <svg>
                         <polyline
                             points="75,0 75,102"
-                            fill="none" stroke="magenta" stroke-width="45"/>
+                            fill="none" stroke="magenta" stroke-width="45">
+                            <animate id="blink" attributeName="points"
+                                     values="75,0 75,102;
+                                             75,28 75,73;
+                                             75,0 75,102"
+                                     dur="0.15s" begin="3s;blink.end+3s"/>
+                        </polyline>
                     </svg>
                 </div>
                 <div class="eyes eyes-right">
                     <svg>
                         <polyline
                             points="75,0 75,102"
-                            fill="none" stroke="magenta" stroke-width="45"/>
+                            fill="none" stroke="magenta" stroke-width="45">
+                            <animate id="blink" attributeName="points"
+                                     values="75,0 75,102;
+                                             75,28 75,73;
+                                             75,0 75,102"
+                                     dur="0.15s" begin="3s;blink.end+3s"/>
+                        </polyline>
                     </svg>
                 </div>
                 <div class="mouth">
