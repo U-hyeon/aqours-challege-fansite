@@ -7,8 +7,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class MainController {
 
-    @GetMapping("loading")
-    public String MainPage(Model model) {
+    @GetMapping("/")
+    public String index(Model model) {
+        return "main";
+    }
+
+    @GetMapping("/loading")
+    public String LoadingPage(Model model) {
         model.addAttribute("status", "로딩중...");
         return "loading";
     }
