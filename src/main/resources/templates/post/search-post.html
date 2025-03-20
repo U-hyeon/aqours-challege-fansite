@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="search-bar">
+    <div class="search-type">검색 방식 선택</div>
+    <input class="search-box" placeholder="검색어를 입력하세요">
+    <button class="btn btn-search">검색버튼</button>
+  </div>
+    <table>
+      <tr>
+        <th>No</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>작성일</th>
+      </tr>
+      <th:block th:each="post: ${postList}">
+        <tr>
+          <td th:text="${post.getPostId()}"></td>
+          <td th:text="${post.getTitle()}"></td>
+          <td th:text="${post.getMemberId()}"></td>
+          <td th:text="${post.getCreatedTime()}"></td>
+        </tr>
+      </th:block>
+    </table>
+</div>
+</body>
+</html>
