@@ -49,9 +49,9 @@
          th:errors="*{password}" class="fieldError">Incorrect data</p>
     </div>
     <div class="form-group">
-      <label th:for="twitterId">주소</label>
+      <label th:for="twitterId">Twitter ID</label>
       <input type="text" th:field="*{twitterId}" class="form-control"
-             placeholder="주소를 입력해주세요">
+             placeholder="트위터 계정을 입력하세요">
       <p th:if="${#fields.hasErrors('twitterId')}"
          th:errors="*{twitterId}" class="fieldError">Incorrect data</p>
     </div>

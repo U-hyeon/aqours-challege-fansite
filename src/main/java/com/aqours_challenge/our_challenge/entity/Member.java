@@ -1,10 +1,9 @@
 package com.aqours_challenge.our_challenge.entity;
 
+import com.aqours_challenge.our_challenge.constant.Gender;
 import com.aqours_challenge.our_challenge.constant.Role;
 import com.aqours_challenge.our_challenge.dto.MemberFormDto;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
@@ -14,16 +13,22 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long memberId;
 
-    private String email;
-    private String password;
-    private String memberName;
-
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    private String gender;
-    private String age;
+    // 필수정보 ~start
+    private String email;
+    private String password;
+    private String memberName;
     private String twitterId;
+    // ~end 필수정보
+
+    // 부가정보 ~start
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+    private String birthYear;
+    private String countryCode;
+    // ~end 부가정보
 
     public Long getMemberId() {
         return memberId;
@@ -65,22 +70,6 @@ public class Member {
         this.role = role;
     }
 
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public String getAge() {
-        return age;
-    }
-
-    public void setAge(String age) {
-        this.age = age;
-    }
-
     public String getTwitterId() {
         return twitterId;
     }
@@ -89,15 +78,44 @@ public class Member {
         this.twitterId = twitterId;
     }
 
+    /**
+     * 필수정보를 통한 신규회원 생성
+     */
     public static Member createMember(MemberFormDto memberFormDto, PasswordEncoder passwordEncoder) {
         Member member = new Member();
 
-        member.setMemberName(memberFormDto.getMemberName());
+        member.setRole(Role.ADMIN);
         member.setEmail(memberFormDto.getEmail());
         String password = passwordEncoder.encode(memberFormDto.getPassword());
         member.setPassword(password);
-        member.setRole(Role.USER);
+        member.setMemberName(memberFormDto.getMemberName());
+        member.setTwitterId(memberFormDto.getTwitterId());
 
         return member;
+    }
+
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public String getBirthYear() {
+        return birthYear;
+    }
+
+    public void setBirthYear(String birthYear) {
+        this.birthYear = birthYear;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String country) {
+        this.countryCode = country;
     }
 }
