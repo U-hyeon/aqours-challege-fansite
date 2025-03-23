@@ -2,11 +2,11 @@ package com.aqours_challenge.our_challenge.service;
 
 import com.aqours_challenge.our_challenge.entity.Member;
 import com.aqours_challenge.our_challenge.repository.MemberRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +29,10 @@ public class MemberService implements UserDetailsService {
         if (findMember != null) {
             throw new IllegalStateException("이미 가입된 회원입니다.");
         }
+    }
+
+    public Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email);
     }
 
     // override UserDetailsService

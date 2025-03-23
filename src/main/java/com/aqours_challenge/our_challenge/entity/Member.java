@@ -50,8 +50,8 @@ public class Member {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPassword(String password, PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(password);
     }
 
     public String getMemberName() {
@@ -86,8 +86,7 @@ public class Member {
 
         member.setRole(Role.ADMIN);
         member.setEmail(memberFormDto.getEmail());
-        String password = passwordEncoder.encode(memberFormDto.getPassword());
-        member.setPassword(password);
+        member.setPassword(memberFormDto.getPassword(), passwordEncoder);
         member.setMemberName(memberFormDto.getMemberName());
         member.setTwitterId(memberFormDto.getTwitterId());
 
