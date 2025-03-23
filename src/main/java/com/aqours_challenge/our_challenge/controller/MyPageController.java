@@ -26,4 +26,12 @@ public class MyPageController {
         model.addAttribute("currentUserEmail", currentUserEmail);
         return "mypage/validate-page";
     }
+
+    @GetMapping("/user-info")
+    public String userInfo(Principal principal, Model model) {
+        String currentUserEmail = principal.getName();
+
+        model.addAttribute("userInfo", memberService.findMemberByEmail(currentUserEmail));
+        return "mypage/user-info";
+    }
 }

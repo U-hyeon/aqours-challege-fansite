@@ -6,7 +6,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +32,15 @@ public class MemberService implements UserDetailsService {
 
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email);
+    }
+
+    /**
+     * 회원정보 수정
+     */
+    public int changeMemberInfo(Member member) {
+        return memberRepository.updateMemberInformation(member.getEmail()
+                , member.getPassword(), member.getMemberName(), member.getTwitterId()
+                , member.getGender(), member.getBirthYear(), member.getCountryCode());
     }
 
     // override UserDetailsService

@@ -84,4 +84,29 @@ public class MemberController {
                 .ok()
                 .body(result);
     }
+
+    @PostMapping(value = "/change-member-info", produces = "application/json; charset=UTF-8")
+    public ResponseEntity<Map<String, Object>> changeMemberInfo(@RequestBody UserInfoDto userInfoDto) {
+        Map<String, Object> result = new HashMap<>();
+
+        Member newMemberInfo = new Member();
+        newMemberInfo.setEmail(userInfoDto.getEmail());
+        newMemberInfo.setPassword(userInfoDto.getPassword(), passwordEncoder);
+        newMemberInfo.setMemberName(userInfoDto.getMemberName());
+        newMemberInfo.setTwitterId(userInfoDto.getTwitterId());
+        newMemberInfo.setGender(userInfoDto.getGender());
+        newMemberInfo.setBirthYear(userInfoDto.getBirthYear());
+        newMemberInfo.setCountryCode(userInfoDto.getCountryCode());
+        if (memberService.changeMemberInfo(newMemberInfo) > 0) {
+            result.put("status", "success");
+            return ResponseEntity
+                    .ok()
+                    .body(result);
+        }
+
+        result.put("status", "failed");
+        return ResponseEntity
+                .ok()
+                .body(result);
+    }
 }
