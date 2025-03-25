@@ -24,9 +24,18 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "order by p.postId desc")
     List<Post> findByMemberNameKeyword(@Param("keyword") String keyword);
 
-    @Query(value = "select * " +
+    @Query(value =
+            "select " +
+                    "post_id, " +
+                    "topten.member_id," +
+                    "title," +
+                    "content," +
+                    "tags," +
+                    "created_time," +
+                    "updated_time," +
+                    "delete_flag " +
             "from (select * from Post p where p.delete_flag = 'N' order by p.created_time desc limit 10) topten " +
-            "inner join Member m on topten.member_id = m.membe_id " +
+            "inner join Member m on topten.member_id = m.member_id " +
             "where topten.title = :title " +
             "and topten.member_id = :memberId "
             , nativeQuery = true)
