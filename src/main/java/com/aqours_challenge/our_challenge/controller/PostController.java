@@ -1,31 +1,32 @@
 package com.aqours_challenge.our_challenge.controller;
 
-import com.aqours_challenge.our_challenge.dto.MemberFormDto;
 import com.aqours_challenge.our_challenge.dto.PostFormDto;
 import com.aqours_challenge.our_challenge.entity.Member;
 import com.aqours_challenge.our_challenge.entity.Post;
+import com.aqours_challenge.our_challenge.service.MemberService;
 import com.aqours_challenge.our_challenge.service.PostService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 @Controller
 @RequestMapping("/posts")
 public class PostController {
     private final PostService postService;
+    private final MemberService memberService;
 
-    public PostController(PostService postService) {
+    public PostController(PostService postService, MemberService memberService) {
         this.postService = postService;
+        this.memberService = memberService;
     }
 
     @GetMapping("/search")
@@ -47,13 +48,21 @@ public class PostController {
 
     @PostMapping("/new")
     public String saveNewPost(@Valid PostFormDto postFormDto,
-                             BindingResult bindingResult, Model model) {
+                              BindingResult bindingResult, Principal principal, Model model) {
+        // 게시물 데이터 검증
         if(bindingResult.hasErrors()) {
             return "post/new-post";
         }
 
+        // 작성자 정보 가져오기
+        Member currentMember = memberService.findMemberByEmail(principal.getName());
+        if(currentMember == null) {
+            // 로그인 페이지로 이동
+            return "redirect:/members/login";
+        }
+
         try {
-            Post post = Post.createPost(postFormDto);
+            Post post = Post.createPost(currentMember.getMemberId(), postFormDto);
             postService.savePost(post);
         } catch (IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());

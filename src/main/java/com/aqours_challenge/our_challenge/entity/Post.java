@@ -88,8 +88,9 @@ public class Post {
         this.deleteFlag = deleteFlag;
     }
 
-    public static Post createPost(PostFormDto postFormDto) {
+    public static Post createPost(Long memberId, PostFormDto postFormDto) {
         Post post = new Post();
+        post.setMemberId(memberId);
         post.setTitle(postFormDto.getTitle());
         post.setContent(postFormDto.getContent());
         post.setTags(postFormDto.getTags());
