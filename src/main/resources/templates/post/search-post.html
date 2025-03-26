@@ -28,9 +28,12 @@
         <th>작성일</th>
       </tr>
       <th:block th:each="post: ${postList}">
-        <tr>
-          <td th:text="${post.getPostId()}"></td>
-          <td th:text="${post.getTitle()}"></td>
+        <tr class="post">
+          <td class="post-id" th:text="${post.getPostId()}"></td>
+          <td class="post-title">
+            <a href="#" class="post-link" th:href="@{/posts/detail/{postId} (postId=${post.getPostId()}) }"
+               th:text="${post.getTitle()}" data-post-id="${post.getPostId()}">게시물 제목</a>
+          </td>
           <td th:text="${post.getMemberId()}"></td>
           <td th:text="${post.getCreatedTime()}"></td>
         </tr>

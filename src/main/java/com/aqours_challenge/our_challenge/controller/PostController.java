@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -71,5 +72,15 @@ public class PostController {
 
         // 게시물 목록으로 이동
         return "redirect:/posts/search";
+    }
+
+    @GetMapping("/detail/{strPostId}")
+    public String detailPost(@PathVariable String strPostId, Model model, Principal principal) {
+        Long postId = Long.parseLong(strPostId);
+        Post post = postService.getPostByPostId(postId);
+        String memberName = memberService.findMemberByEmail(principal.getName()).getMemberName();
+        model.addAttribute("post", post);
+        model.addAttribute("memberName", memberName);
+        return "post/detail-post";
     }
 }
