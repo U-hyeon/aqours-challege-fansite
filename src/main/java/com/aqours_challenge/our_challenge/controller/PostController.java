@@ -6,17 +6,17 @@ import com.aqours_challenge.our_challenge.entity.Post;
 import com.aqours_challenge.our_challenge.service.MemberService;
 import com.aqours_challenge.our_challenge.service.PostService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Controller
@@ -34,7 +34,7 @@ public class PostController {
     public String getPosts(Model model) {
         // 게시물 리스트 전달
         List<Post> postList = new ArrayList<>();
-        postList = postService.getAllPosts();
+        postList = postService.getAllPostNotDeleted();
 
         model.addAttribute("postList", postList);
 
@@ -78,9 +78,35 @@ public class PostController {
     public String detailPost(@PathVariable String strPostId, Model model, Principal principal) {
         Long postId = Long.parseLong(strPostId);
         Post post = postService.getPostByPostId(postId);
+        if (!post.getDeleteFlag().equals("N")) {
+            return "customError/deleted-post";
+        }
         String memberName = memberService.findMemberByEmail(principal.getName()).getMemberName();
         model.addAttribute("post", post);
         model.addAttribute("memberName", memberName);
         return "post/detail-post";
     }
+
+//    @DeleteMapping
+//    public ResponseEntity<Map<String, Object>> deletePost(@RequestBody HashMap<String, Object> params) {
+//        Map<String, Object> result = new HashMap<>();
+//
+//        result.put("message", "게시물 삭제 처리");
+//        if (params == null || params.isEmpty() || params.get("postId") == null) {
+//            result.put("error", "Invalid parameters");
+//            return ResponseEntity.badRequest().body(result);
+//        }
+//
+//        int resultQuery = postService.deletePost(params.get("postId").toString());
+//
+//        if (resultQuery == 0) {
+//            result.put("error", "Post not found");
+//            return ResponseEntity.badRequest().body(result);
+//        }
+//
+//        result.put("status", resultQuery + "개의 게시물 삭제완료");
+//        return ResponseEntity
+//                .ok()
+//                .body(result);
+//    }
 }
