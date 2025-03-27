@@ -14,8 +14,8 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-    public List<Post> getAllPosts() {
-        return postRepository.findAll();
+    public List<Post> getAllPostNotDeleted() {
+        return postRepository.getAllPostNotDeleted();
     }
 
     public Post savePost(Post post) {
@@ -23,6 +23,10 @@ public class PostService {
             throw new IllegalStateException("동일한 게시물을 작성할 수 없습니다.");
         }
         return postRepository.save(post);
+    }
+
+    public int deletePost(String postId) {
+        return postRepository.deletePost(Long.parseLong(postId));
     }
 
     public boolean isDoubledRequest(Post post) {

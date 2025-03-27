@@ -2,13 +2,27 @@ package com.aqours_challenge.our_challenge.repository;
 
 import com.aqours_challenge.our_challenge.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
     Post findByPostId(Long postId);
+
+    @Query("select p from Post p " +
+            "where p.deleteFlag = 'N' " +
+            "order by p.postId asc")
+    List<Post> getAllPostNotDeleted();
+
+    @Modifying
+    @Transactional
+    @Query("update Post p " +
+            "set p.deleteFlag = 'Y' " +
+            "where p.postId = :postId")
+    int deletePost(@Param("postId") Long postId);
 
     @Query("select p from Post p " +
             "where p.title like %:keyword% " +
