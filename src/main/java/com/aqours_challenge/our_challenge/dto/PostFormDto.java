@@ -1,7 +1,10 @@
 package com.aqours_challenge.our_challenge.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.Length;
+
+import java.util.List;
 
 public class PostFormDto {
     @NotBlank(message = "제목을 입력하세요.")
@@ -12,8 +15,8 @@ public class PostFormDto {
     @Length(max=200, message = "최대 작성 가능한 길이는 200자 입니다.")
     private String content;
 
-    @Length(max=55, message = "태그정보는 총 50자 까지입니다.")
-    private String tags;
+    @Size(max = 5, message = "태그는 최대 5개까지만 지정 가능합니다.")
+    private List<@Length(max=20, message = "태그 최대 길이는 20자 입니다.") String> tags;
 
     public @NotBlank(message = "제목을 입력하세요.") @Length(max = 30, message = "제목은 최대 30자입니다.") String getTitle() {
         return title;
@@ -31,11 +34,11 @@ public class PostFormDto {
         this.content = content;
     }
 
-    public @Length(max = 55, message = "태그정보는 총 50자 까지입니다.") String getTags() {
+    public @Size(max = 5, message = "태그는 최대 5개까지만 지정 가능합니다.") List<@Length(max = 20, message = "태그 최대 길이는 20자 입니다.") String> getTags() {
         return tags;
     }
 
-    public void setTags(@Length(max = 55, message = "태그정보는 총 50자 까지입니다.") String tags) {
+    public void setTags(@Size(max = 5, message = "태그는 최대 5개까지만 지정 가능합니다.") List<@Length(max = 20, message = "태그 최대 길이는 20자 입니다.") String> tags) {
         this.tags = tags;
     }
 }

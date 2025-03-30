@@ -28,4 +28,10 @@ public class Tag {
     public void setTagName(String tagName) {
         this.tagName = tagName;
     }
+
+    public static Tag createTag(String tagName) {
+        Tag tag = new Tag();
+        tag.setTagName(tagName);
+        return tag;
+    }
 }
