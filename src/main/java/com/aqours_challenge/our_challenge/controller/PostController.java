@@ -6,7 +6,6 @@ import com.aqours_challenge.our_challenge.entity.Post;
 import com.aqours_challenge.our_challenge.service.MemberService;
 import com.aqours_challenge.our_challenge.service.PostService;
 import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,9 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @Controller
@@ -64,7 +61,7 @@ public class PostController {
 
         try {
             Post post = Post.createPost(currentMember.getMemberId(), postFormDto);
-            postService.savePost(post);
+            postService.savePost(post, postFormDto.getTags());
         } catch (IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "post/new-post";
@@ -86,27 +83,4 @@ public class PostController {
         model.addAttribute("memberName", memberName);
         return "post/detail-post";
     }
-
-//    @DeleteMapping
-//    public ResponseEntity<Map<String, Object>> deletePost(@RequestBody HashMap<String, Object> params) {
-//        Map<String, Object> result = new HashMap<>();
-//
-//        result.put("message", "게시물 삭제 처리");
-//        if (params == null || params.isEmpty() || params.get("postId") == null) {
-//            result.put("error", "Invalid parameters");
-//            return ResponseEntity.badRequest().body(result);
-//        }
-//
-//        int resultQuery = postService.deletePost(params.get("postId").toString());
-//
-//        if (resultQuery == 0) {
-//            result.put("error", "Post not found");
-//            return ResponseEntity.badRequest().body(result);
-//        }
-//
-//        result.put("status", resultQuery + "개의 게시물 삭제완료");
-//        return ResponseEntity
-//                .ok()
-//                .body(result);
-//    }
 }

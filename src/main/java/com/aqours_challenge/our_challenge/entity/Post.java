@@ -17,7 +17,6 @@ public class Post {
 
     private String title; // 게시물 타이틀
     private String content; // 게시물 내용
-    private String tags;
 
     private LocalDateTime createdTime;
     private LocalDateTime updatedTime;
@@ -56,14 +55,6 @@ public class Post {
         this.content = content;
     }
 
-    public String getTags() {
-        return tags;
-    }
-
-    public void setTags(String tags) {
-        this.tags = tags;
-    }
-
     public LocalDateTime getCreatedTime() {
         return createdTime;
     }
@@ -93,7 +84,6 @@ public class Post {
         post.setMemberId(memberId);
         post.setTitle(postFormDto.getTitle());
         post.setContent(postFormDto.getContent());
-        post.setTags(postFormDto.getTags());
         post.setCreatedTime(LocalDateTime.now());
         post.setUpdatedTime(LocalDateTime.now());
         post.setDeleteFlag("N");
