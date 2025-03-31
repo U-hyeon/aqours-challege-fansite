@@ -60,9 +60,6 @@ public class PostService {
         return newPost;
     }
 
-    /**
-     * 게시물 제거
-     */
     public int deletePost(String postId) {
         return postRepository.deletePost(Long.parseLong(postId));
     }
