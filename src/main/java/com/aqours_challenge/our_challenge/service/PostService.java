@@ -28,6 +28,9 @@ public class PostService {
         return postRepository.getAllPostNotDeleted();
     }
 
+    /**
+     * 게시물 저장, 신규 태그 저장, 게시물과 태그 연결
+     */
     public Post savePost(Post post, List<String> tags) {
         Post newPost = new Post();
 
