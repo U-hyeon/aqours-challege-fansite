@@ -50,7 +50,9 @@
         </li>
         <li>
             <div>태그</div>
-            <div th:text="${post.getTags()}"></div>
+            <th:block th:each="tag : ${tags}">
+                <div th:text="${tag}"></div>
+            </th:block>
         </li>
     </ul>
     <button onclick="deletePost()">삭제</button>

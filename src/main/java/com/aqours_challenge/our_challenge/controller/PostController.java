@@ -5,6 +5,7 @@ import com.aqours_challenge.our_challenge.entity.Member;
 import com.aqours_challenge.our_challenge.entity.Post;
 import com.aqours_challenge.our_challenge.service.MemberService;
 import com.aqours_challenge.our_challenge.service.PostService;
+import com.aqours_challenge.our_challenge.service.TagPostService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,10 +22,12 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
     private final MemberService memberService;
+    private final TagPostService tagPostService;
 
-    public PostController(PostService postService, MemberService memberService) {
+    public PostController(PostService postService, MemberService memberService, TagPostService tagPostService) {
         this.postService = postService;
         this.memberService = memberService;
+        this.tagPostService = tagPostService;
     }
 
     @GetMapping("/search")
@@ -80,6 +83,7 @@ public class PostController {
         }
         String memberName = memberService.findMemberByEmail(principal.getName()).getMemberName();
         model.addAttribute("post", post);
+        model.addAttribute("tags", tagPostService.getTagsOfPost(post));
         model.addAttribute("memberName", memberName);
         return "post/detail-post";
     }
