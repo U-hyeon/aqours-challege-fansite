@@ -9,13 +9,11 @@ public class TagPost {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long TagPostId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag_id")
-    private Tag tag;
+    private Long tagId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
-    private Post post;
+    private Long postId;
 
     public Long getTagPostId() {
         return TagPostId;
@@ -25,26 +23,26 @@ public class TagPost {
         TagPostId = tagPostId;
     }
 
-    public Tag getTag() {
-        return tag;
+    public Long getTagId() {
+        return tagId;
     }
 
-    public void setTag(Tag tag) {
-        this.tag = tag;
+    public void setTagId(Long tagId) {
+        this.tagId = tagId;
     }
 
-    public Post getPost() {
-        return post;
+    public Long getPostId() {
+        return postId;
     }
 
-    public void setPost(Post post) {
-        this.post = post;
+    public void setPostId(Long postId) {
+        this.postId = postId;
     }
 
-    public static TagPost createTagPost(Tag tag, Post post) {
+    public static TagPost createTagPost(Long tagId, Long postId) {
         TagPost tagPost = new TagPost();
-        tagPost.setTag(tag);
-        tagPost.setPost(post);
+        tagPost.setTagId(tagId);
+        tagPost.setPostId(postId);
         return tagPost;
     }
 }
