@@ -28,6 +28,10 @@ public class PostService {
         return postRepository.getAllPostNotDeleted();
     }
 
+    public List<Post> getPostsByKeyword(String keyword) {
+        return postRepository.findByKeyword(keyword);
+    }
+
     /**
      * 게시물 저장, 신규 태그 저장, 게시물과 태그 연결
      */

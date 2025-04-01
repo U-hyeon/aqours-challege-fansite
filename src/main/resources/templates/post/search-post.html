@@ -11,8 +11,8 @@
 <div layout:fragment="content">
   <div class="search-bar">
     <div class="search-type">검색 방식 선택</div>
-    <input class="search-box" placeholder="검색어를 입력하세요">
-    <button class="btn btn-search">검색버튼</button>
+    <input class="search-box" id="keyword" placeholder="검색어를 입력하세요">
+    <button class="btn btn-search" onclick="fnSearch();">검색버튼</button>
   </div>
     <table>
       <colgroup>
@@ -44,4 +44,10 @@
     <button>버튼3</button>
 </div>
 </body>
+<script>
+  function fnSearch(){
+    var keyword = document.querySelector("#keyword").value;
+    location.href='/posts/search?keyword=' + keyword;
+  }
+</script>
 </html>
