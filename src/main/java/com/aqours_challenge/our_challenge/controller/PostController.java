@@ -31,11 +31,14 @@ public class PostController {
     }
 
     @GetMapping("/search")
-    public String getPosts(Model model) {
+    public String getPosts(@RequestParam(required = false) String keyword, Model model) {
         // 게시물 리스트 전달
         List<Post> postList = new ArrayList<>();
-        postList = postService.getAllPostNotDeleted();
-
+        if (keyword == null) {
+            postList = postService.getAllPostNotDeleted();
+        } else {
+            postList = postService.getPostsByKeyword(keyword);
+        }
         model.addAttribute("postList", postList);
 
         return "post/search-post";
