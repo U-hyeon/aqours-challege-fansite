@@ -2,7 +2,7 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/layout1}">
+      layout:decorate="~{layouts/header-content}">
 <!-- 사용자 css 추가 -->
 <th:block layout:fragment="css">
     <style>
@@ -15,67 +15,60 @@
 <!-- 사용자 스크립트 추가 -->
 <th:block layout:fragment="script">
     <script th:inline="javascript">
-        // $(document).ready(function() {
-        //   var errorMessage = [[${errorMessage}]];
-        //   if (errorMessage != null) {
-        //     alert(errorMessage);
-        //   }
-        // });
+        function validate() {
+            var email = document.querySelector("#email").textContent;
+            var password = document.querySelector("#password").value;
+
+
+            fetch('/members/validate', {
+                method: 'POST',  // POST 방식으로 데이터를 보냄
+                headers: {
+                    'Content-Type': 'application/json',  // 데이터 형식: JSON
+                    'X-CSRF-TOKEN': document.querySelector('input.token').value // CSRF 토큰 추가
+                },
+                body: JSON.stringify({
+                    email : email,
+                    password : password
+                })
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();  // JSON 형태로 응답 데이터 처리
+            })
+                .then(data => {
+                    if (data.error != null) {
+                        alert("오류 발생.\n" + data.error);
+                        return;
+                    }
+                    if (data.status !== "success") {
+                        alert("회원정보를 찾을 수 없습니다.");
+                        return;
+                    }
+                    location.replace("mypage/user-info");
+                })
+                .catch(error => {
+                    alert("서버로부터 응답을 받지 못하였습니다.")
+                });
+        }
+
+        // 버튼 클릭 시 AJAX 요청 함수 호출
+        document.querySelector('button.btn.validate').addEventListener('click', function() {
+            validate();
+        });
     </script>
 </th:block>
-
-<div layout:fragment="content">
-    <div>마이페이지 2차 로그인</div>
-    <div>이메일</div>
-    <div id="email" th:text="${currentUserEmail}"></div>
-    <div>비밀번호</div>
-    <input type="text" id="password">
-    <button class="btn validate">확인</button>
-    <input type="hidden" class="token" th:name="${_csrf.parameterName}"
-           th:value="${_csrf.token}"
-    >
-</div>
-<script>
-    function validate() {
-        var email = document.querySelector("#email").textContent;
-        var password = document.querySelector("#password").value;
-
-
-        fetch('/members/validate', {
-            method: 'POST',  // POST 방식으로 데이터를 보냄
-            headers: {
-                'Content-Type': 'application/json',  // 데이터 형식: JSON
-                'X-CSRF-TOKEN': document.querySelector('input.token').value // CSRF 토큰 추가
-            },
-            body: JSON.stringify({
-                email : email,
-                password : password
-            })
-        }).then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();  // JSON 형태로 응답 데이터 처리
-        })
-        .then(data => {
-            if (data.error != null) {
-                alert("오류 발생.\n" + data.error);
-                return;
-            }
-            if (data.status !== "success") {
-                alert("회원정보를 찾을 수 없습니다.");
-                return;
-            }
-            location.replace("mypage/user-info");
-        })
-        .catch(error => {
-            alert("서버로부터 응답을 받지 못하였습니다.")
-        });
-    }
-
-    // 버튼 클릭 시 AJAX 요청 함수 호출
-    document.querySelector('button.btn.validate').addEventListener('click', function() {
-        validate();
-    });
-</script>
+<body>
+    <div layout:fragment="content">
+        <div>마이페이지 2차 로그인</div>
+        <div>이메일</div>
+        <div id="email" th:text="${currentUserEmail}"></div>
+        <div>비밀번호</div>
+        <input type="text" id="password">
+        <button class="btn validate" onclick="validate();">확인</button>
+        <input type="hidden" class="token" th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}"
+        >
+    </div>
+</body>
 </html>
