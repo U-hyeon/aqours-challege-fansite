@@ -1,0 +1,197 @@
+* {
+    margin: 0;
+    padding: 0;
+    outline: none;
+}
+li {
+    list-style-type: none;
+}
+#container {
+    padding-top: 125px;
+    width: 1020px;
+    margin: auto;
+    position: relative;
+}
+header {
+    position: absolute;
+    z-index: 5;
+    width: 100%;
+    pointer-events: none; }
+header .inner {
+    width: 1020px;
+    margin: auto;
+    position: relative;
+    vertical-align: top;
+    font-size: 0px;
+    letter-spacing: 0.0; }
+header .logo {
+    pointer-events: auto;
+    letter-spacing: 0.0;
+    display: inline-block;
+    vertical-align: top;
+    background: #fff;
+    padding-top: 10px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-bottom: 20px;
+    border-radius: 0px 0px 69px 69px;
+    box-shadow: 3px 5px 5px 0px rgba(0, 0, 0, 0.1); }
+header .logo a {
+    display: block;
+    /*text-indent: -99999px;*/
+    font-size: 0;
+    width: 106px;
+    height: 95px;
+    /*background: url("../img/main_logo.png") bottom center repeat-x;*/
+}
+header .btn-menu {
+    display: none; }
+header .menu {
+    pointer-events: auto;
+    letter-spacing: 1.5em;
+    display: inline-block;
+    vertical-align: top;
+    background: #fff;
+    border-radius: 0px 0px 5px 0px;
+    box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.1); }
+header .menu .btn-close {
+    display: none; }
+header .menu ul.main-nav {
+    display: inline-block;
+    vertical-align: top; }
+header .menu ul.main-nav li {
+    font-size: 16px;
+    display: inline-block;
+    text-align: center; }
+header .menu ul.main-nav li.active a.top {
+    background-color: #18b6ff; }
+header .menu ul.main-nav li.active a.news {
+    background-color: #63ff9e; }
+header .menu ul.main-nav li.active a.news span.en {
+    color: #fff; }
+header .menu ul.main-nav li.active a.post {
+    background-color: #ff3333; }
+header .menu ul.main-nav li.active a.help {
+    background-color: #ff99cc; }
+header .menu ul.main-nav li.active a.admin {
+    background-color: #b545da; }
+header .menu ul.main-nav li.active a.blog {
+    background-color: #ff3737; }
+header .menu ul.main-nav li.active a.photo {
+    background-color: #b545da; }
+header .menu ul.main-nav li.active a.movie {
+    background-color: #ff8400; }
+header .menu ul.main-nav li.active a span {
+    filter: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg"><filter id="filter"><feComponentTransfer color-interpolation-filters="sRGB"><feFuncR type="linear" slope="3" /><feFuncG type="linear" slope="3" /><feFuncB type="linear" slope="3" /></feComponentTransfer></filter></svg>#filter');
+    filter: brightness(300%); }
+header .menu ul.main-nav li a {
+    width: 130px;
+    padding-top: 8px;
+    padding-bottom: 5px;
+    margin-top: 7px;
+    margin-bottom: 7px;
+    border-radius: 5px;
+    display: block; }
+header .menu ul.main-nav li a:hover {
+    opacity: 1.0;
+    transition: background-color 0.3s ease-out; }
+header .menu ul.main-nav li a:hover.top {
+    background-color: #18b6ff; }
+header .menu ul.main-nav li a:hover.news {
+    background-color: #63ff9e; }
+header .menu ul.main-nav li a:hover.news span.en {
+    color: #fff; }
+header .menu ul.main-nav li a:hover.post {
+    background-color: #ff3333; }
+header .menu ul.main-nav li a:hover.help {
+    background-color: #ff99cc; }
+header .menu ul.main-nav li a:hover.admin {
+    background-color: #b545da; }
+header .menu ul.main-nav li a:hover.blog {
+    background-color: #ff3737; }
+header .menu ul.main-nav li a:hover.photo {
+    background-color: #b545da; }
+header .menu ul.main-nav li a:hover.movie {
+    background-color: #ff8400; }
+header .menu ul.main-nav li a:hover span {
+    filter: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg"><filter id="filter"><feComponentTransfer color-interpolation-filters="sRGB"><feFuncR type="linear" slope="3" /><feFuncG type="linear" slope="3" /><feFuncB type="linear" slope="3" /></feComponentTransfer></filter></svg>#filter');
+    filter: brightness(300%); }
+header .menu ul.main-nav li a span.jp {
+    display: block;
+    height: 20px;
+    line-height: 20px; }
+header .menu ul.main-nav li a span.en {
+    font-size: 9px;
+    color: #ffba00;
+    font-weight: 800;
+    display: block;
+    text-align: center;
+    font-weight: 800;
+    font-family: "Metropolis",Helvetica, Arial,'NotoSans','ヒラギノ角ゴ ProN','Hiragino Kaku Gothic ProN','ＭＳ Ｐゴシック','MS PGothic',sans-serif;
+    letter-spacing: 0.4em;
+    margin-right: -0.4em; }
+header .menu .account {
+    padding-right: 20px;
+    text-align: right;
+    display: inline-block;
+    width: 212px;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 0.15em; }
+header .menu .account a {
+    position: relative;
+    display: inline-block;
+    padding-top: 8px;
+    padding-bottom: 5px;
+    padding-right: 20px;
+    margin-top: 7px;
+    margin-bottom: 7px;
+    line-height: 20px;
+    color: #18b6ff; }
+header .menu .account a:after {
+    content: "";
+    top: 50%;
+    right: 0px;
+    margin-top: -4px;
+    position: absolute;
+    display: block;
+    width: 9px;
+    height: 9px;
+    text-indent: -99999px;
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-image: url("/contents/1/AC/2017/img/common/common_nav_icon_account.png"); }
+header .menu .account span {
+    font-weight: 800;
+    font-family: "Metropolis",Helvetica, Arial,'NotoSans','ヒラギノ角ゴ ProN','Hiragino Kaku Gothic ProN','ＭＳ Ｐゴシック','MS PGothic',sans-serif;
+    display: block;
+    font-size: 9px;
+    line-height: 1.0;
+    letter-spacing: 0.2em;
+    color: #cfc5ad; }
+header .account-dropdown {
+    display: none;
+    border-radius: 10px;
+    background: #fff;
+    position: absolute;
+    z-index: 100;
+    right: 20px;
+    top: 50px;
+    font-size: 13px;
+    box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.1); }
+header .account-dropdown li {
+    border-bottom: 1px solid;
+    border-color: #918979;
+    line-height: 1.0; }
+header .account-dropdown li:last-child {
+    border-bottom: none; }
+header .account-dropdown li a {
+    display: block;
+    width: 110px;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px; }
+header .account-dropdown li a:hover {
+    opacity: 1.0;
+    color: #fff;
+    background: #18b6ff; }
