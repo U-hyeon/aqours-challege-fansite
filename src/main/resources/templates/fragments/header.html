@@ -1,42 +1,94 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-  <div th:fragment="header">
-    <nav class="navbar navbar-expand-sm bg-primary navbar-dark">
-      <button class="navbar-toggler" type="button" data-toggle="collapse"
-              data-target="#navbarTogglerDemo03"
-              aria-controls="navbarTogglerDemo03"
-              aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggle-icon"></span>
-      </button>
-      <a class="navbar-brand" href="/">타이틀 영역</a>
-
-      <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-          <li class="nav-item">
-            <a class="nav-link" href="/posts/notice">공지사항</a>
+<div th:fragment="header">
+  <div class="inner">
+    <p class="logo">
+      <a href="/" style="padding-left: 8px;">
+        <img src="../img/main_logo.png" width="90" height="90"/>
+      </a>
+    </p>
+    <nav class="menu" style="opacity: 1; display: inline-block;">
+      <div class="menu-inner">
+        <ul class="main-nav">
+          <li>
+            <a class="top" href="/">
+              <span class="jp">메인</span>
+              <span class="en">TOP</span>
+            </a>
           </li>
-          <li class="nav-item"
-              sec:authorize="hasAnyAuthority('ROLE_ADMIN')"> <!-- 관리자 권한 -->
-            <a class="nav-link" href="/admin">관리자 메뉴</a>
+          <li>
+            <a class="news" href="/notice">
+              <span class="jp">정보</span>
+              <span class="en">NEWS</span>
+            </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/posts/search">게시판</a>
+          <li>
+            <a class="post" href="/posts/search">
+              <span class="jp">게시판</span>
+              <span class="en">POSTS</span>
+            </a>
           </li>
-          <li class="nav-item"
-              sec:authorize="isAuthenticated()"> <!-- 로그인 여부 -->
-            <a class="nav-link" href="/mypage">마이페이지</a>
+          <li>
+            <a class="help" href="/help">
+              <span class="jp">고객센터</span>
+              <span class="en">HELP</span>
+            </a>
           </li>
-          <li class="nav-item"
-              sec:authorize="isAnonymous()"> <!-- 비로그인(anonymous) -->
-            <a class="nav-link" href="/members/login">로그인</a>
-          </li>
-          <li class="nav-item"
-              sec:authorize="isAuthenticated()"> <!-- 로그인 여부 -->
-            <a class="nav-link" href="/members/logout">로그아웃</a>
+          <li sec:authorize="hasAnyAuthority('ROLE_ADMIN')"> <!-- 관리자 권한 -->
+            <a class="admin" href="/admin">
+              <span class="jp">관리자 메뉴</span>
+              <span class="en">ADMIN</span>
+            </a>
           </li>
         </ul>
+        <p class="account login">
+          <a sec:authorize="isAnonymous()" href="/members/login">LOGIN</a>
+          <a sec:authorize="isAuthenticated()" class="menu" href="javascript:;">
+            HI
+            <span>WELCOME</span>
+          </a>
+        </p>
       </div>
+      <nav class="account-dropdown" sec:authorize="isAuthenticated()">
+        <ul>
+          <li>
+            <a href="/mypage">MY PAGE</a>
+          </li>
+          <li >
+            <a href="/members/logout">LOGOUT</a>
+          </li>
+        </ul>
+      </nav>
     </nav>
   </div>
+  <script>
+    <!-- login-user-menu -->
+    document.querySelector(".account .menu").addEventListener("click", function() {
+      const dropdown = document.querySelector(".account-dropdown");
+      if(dropdown != null) {
+        if (dropdown.style.display === 'none') {
+          dropdown.style.display = 'block'
+        } else {
+          dropdown.style.display = 'none'
+        }
+      }
+    });
+
+    <!-- menu on -->
+    document.addEventListener("DOMContentLoaded", function() {
+      if (location.href.includes('/notice')) {
+        document.querySelector(".main-nav .news").closest("li").className = 'active';
+      } else if (location.href.includes('/posts')) {
+        document.querySelector(".main-nav .post").closest("li").className = 'active';
+      } else if (location.href.includes('/help')) {
+        document.querySelector(".main-nav .help").closest("li").className = 'active';
+      } else if (location.href.includes('/admin')) {
+        document.querySelector(".main-nav .admin").closest("li").className = 'active';
+      } else {
+        document.querySelector(".main-nav .top").closest("li").className = 'active';
+      }
+    });
+  </script>
+</div>
 </html>
