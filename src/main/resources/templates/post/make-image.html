@@ -95,16 +95,18 @@
 
     #bg-wrapper {
       position: absolute;
-      top: 0; left: 0;
+      top: 50%;  /* 중앙 정렬을 위한 기준점 */
+      left: 50%;
       width: 100%;
       height: 100%;
-      pointer-events: none;
       background-repeat: no-repeat;
       background-size: contain;
       background-position: center;
+      pointer-events: none;
+      transform-origin: center center;
       z-index: 0;
-      transform-origin: center center; /* JS에서 동적으로 덮어씌움 */
     }
+
     #preview-container {
       position: relative;
       width: 400px;
@@ -113,9 +115,6 @@
       overflow: hidden;
       margin: auto;
       border: 1px solid #ccc;
-    }
-    .text-box {
-      z-index: 1; /* 텍스트박스는 bg-wrapper 위에 */
     }
 
   </style>
@@ -507,16 +506,22 @@
 
     // 배경 관련 조절 함수
     function adjustBackground() {
-      const imgWrapper = document.getElementById("bg-wrapper");
+      const overlay = document.getElementById("bg-wrapper");
       const opacity = document.getElementById("bgOpacityRange").value;
       const posX = document.getElementById("bgPosX").value;
       const posY = document.getElementById("bgPosY").value;
       const rotate = document.getElementById("bgRotate").value;
       const scale = document.getElementById("bgScale").value;
 
-      imgWrapper.style.opacity = opacity;
-      imgWrapper.style.backgroundPosition = `${posX}% ${posY}%`;
-      imgWrapper.style.transform = `scale(${scale}) rotate(${rotate}deg)`;
+      overlay.style.opacity = opacity;
+
+      // 중심 기준 회전 및 크기 조정, 이후 이동 적용
+      overlay.style.transformOrigin = "center center";
+      overlay.style.transform =
+              `translate(-50%, -50%) ` +   // 중심 정렬
+              `translate(${posX}%, ${posY}%) ` +  // 위치 이동
+              `scale(${scale}) ` +
+              `rotate(${rotate}deg)`;
     }
 
     function saveAsImage() {
