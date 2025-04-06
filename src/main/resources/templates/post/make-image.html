@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/header-content}">
+<head>
+  <!-- jQuery CDN 추가 -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<!-- 사용자 css 추가 -->
+<th:block layout:fragment="css">
+  <style>
+    .fieldError {
+      color: #bd2130;
+    }
+  </style>
+</th:block>
+
+<!-- 사용자 스크립트 추가 -->
+<th:block layout:fragment="script">
+  <script th:inline="javascript">
+    // $(document).ready(function() {
+    //   var errorMessage = [[${errorMessage}]];
+    //   if (errorMessage != null) {
+    //     alert(errorMessage);
+    //   }
+    // });
+  </script>
+</th:block>
+
+<!-- fragments/story-editor.html -->
+<div layout:fragment="content">
+  <style>
+    #preview-container {
+      position: relative;
+      width: 400px;
+      height: 700px;
+      border: 2px solid #ccc;
+      background: #fefefe;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    .text-box {
+      position: absolute;
+      cursor: move;
+      user-select: none;
+      transform-origin: center center;
+      padding: 8px;
+      border-radius: 4px;
+      white-space: pre-wrap;
+    }
+
+    .text-box.selected {
+      border: 1px dashed #000;
+    }
+
+    .resize-handle {
+      width: 10px;
+      height: 10px;
+      background-color: #fff;
+      border: 1px solid #000;
+      position: absolute;
+      z-index: 2;
+    }
+
+    .resize-handle.corner {
+      cursor: nwse-resize;
+    }
+
+    .rotate-handle {
+      width: 12px;
+      height: 12px;
+      background-color: #4CAF50;
+      border-radius: 50%;
+      border: 2px solid white;
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      cursor: grab;
+      z-index: 3;
+    }
+
+    input[type=color],
+    input[type=range],
+    input[type=text],
+    input[type=number] {
+      margin: 4px;
+    }
+
+    .style-buttons button {
+      margin: 2px;
+    }
+
+    #bg-wrapper {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background-repeat: no-repeat;
+      background-size: contain;
+      background-position: center;
+      z-index: 0;
+      transform-origin: center center; /* JS에서 동적으로 덮어씌움 */
+    }
+    #preview-container {
+      position: relative;
+      width: 400px;
+      height: 300px;
+      background-color: #fefefe;
+      overflow: hidden;
+      margin: auto;
+      border: 1px solid #ccc;
+    }
+    .text-box {
+      z-index: 1; /* 텍스트박스는 bg-wrapper 위에 */
+    }
+
+  </style>
+
+  <!-- 텍스트 삭제 버튼 상단으로 이동 -->
+  <div style="text-align: center; margin-bottom: 10px;">
+    <button onclick="addTextBox()">텍스트 추가</button>
+    <button onclick="deleteTextBox()">선택 텍스트 삭제</button>
+  </div>
+
+  <!-- 배경 이미지 및 조절 UI -->
+  <div style="text-align: center; margin-bottom: 10px;">
+    <label>배경 색상: </label>
+    <input type="color" id="bgColorPicker" oninput="updatePreviewBackground()" />
+    <label>배경 이미지: </label>
+    <input type="file" id="bgImageUploader" accept="image/*" onchange="uploadPreviewBackground()" />
+    <br>
+    <label>배경 투명도:</label>
+    <input type="range" id="bgOpacityRange" min="0" max="1" step="0.05" value="1" oninput="adjustBackground()" />
+    <label>X 위치:</label>
+    <input type="range" id="bgPosX" min="0" max="100" value="50" oninput="adjustBackground()" />
+    <label>Y 위치:</label>
+    <input type="range" id="bgPosY" min="0" max="100" value="50" oninput="adjustBackground()" />
+    <label>기울기:</label>
+    <input type="range" id="bgRotate" min="-180" max="180" value="0" oninput="adjustBackground()" />
+    <label>크기:</label>
+    <input type="range" id="bgScale" min="0.1" max="3" step="0.05" value="1" oninput="adjustBackground()" />
+    <br/>
+    <button onclick="resetPreviewBackground()">배경 초기화</button>
+  </div>
+
+  <div style="text-align: center; margin-top: 10px;">
+    <button onclick="saveAsImage()">이미지로 저장</button>
+  </div>
+
+  <!-- 미리보기 컨테이너에 배경 오버레이 추가 -->
+  <div id="preview-container">
+    <div id="bg-wrapper">
+    </div>
+  </div>
+
+  <div id="text-editor" style="text-align: center; margin-top: 20px;">
+    <div>
+      <label>내용:</label>
+      <input type="text" id="textContent" oninput="updateSelectedTextBox()" />
+    </div>
+    <div>
+      <label>폰트 크기:</label>
+      <input type="number" id="fontSize" oninput="updateSelectedTextBox()" />
+    </div>
+    <div>
+      <label>색상:</label>
+      <input type="color" id="fontColor" oninput="updateSelectedTextBox()" />
+    </div>
+    <div>
+      <label>배경색:</label>
+      <input type="color" id="bgColor" oninput="updateSelectedTextBox()" />
+      <label>투명도:</label>
+      <input type="range" id="bgOpacity" min="0" max="1" step="0.05" oninput="updateSelectedTextBox()" />
+    </div>
+    <div>
+      <label>회전:</label>
+      <input type="range" min="-180" max="180" id="rotation" oninput="updateSelectedTextBox()" />
+    </div>
+    <div class="style-buttons">
+      <button onclick="toggleStyle('bold')">Bold</button>
+      <button onclick="toggleStyle('italic')">Italic</button>
+      <button onclick="toggleStyle('underline')">Underline</button>
+    </div>
+    <button onclick="deleteTextBox()">삭제</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <script>
+    let selectedBox = null;
+    let isDragging = false;
+    let offsetX = 0, offsetY = 0;
+    let rotating = false;
+    let initialMouse = {}, initialTransform = {};
+
+    // 배경 이미지 드래그 기능
+    let isDraggingBackground = false;
+    let startX, startY;
+
+    const preview = document.getElementById("preview-container");
+
+    function addTextBox() {
+      const box = document.createElement("div");
+      box.className = "text-box";
+      box.innerText = "새 텍스트";
+      box.style.left = "100px";
+      box.style.top = "100px";
+      box.style.fontSize = "24px";
+      box.style.color = "#000";
+      box.style.backgroundColor = "rgba(255, 255, 255, 0.5)";
+      box.setAttribute("data-rotation", 0);
+      box.setAttribute("data-scale", 1);
+      box.setAttribute("data-bold", "false");
+      box.setAttribute("data-italic", "false");
+      box.setAttribute("data-underline", "false");
+
+      box.addEventListener("mousedown", startDrag);
+      box.addEventListener("click", (e) => {
+        e.stopPropagation();
+        selectTextBox(box);
+      });
+
+      preview.appendChild(box);
+      selectTextBox(box);
+    }
+
+    function createHandles(box) {
+      if (box.querySelector(".resize-handle")) return;
+
+      const corner = document.createElement("div");
+      corner.className = "resize-handle corner";
+      corner.style.right = "-5px";
+      corner.style.bottom = "-5px";
+      corner.addEventListener("mousedown", startResize);
+      box.appendChild(corner);
+
+      const rotate = document.createElement("div");
+      rotate.className = "rotate-handle";
+      rotate.addEventListener("mousedown", startRotate);
+      box.appendChild(rotate);
+    }
+
+    function removeHandles(box) {
+      box.querySelectorAll(".resize-handle, .rotate-handle").forEach(el => el.remove());
+    }
+
+    function selectTextBox(box) {
+      if (selectedBox && selectedBox !== box) {
+        selectedBox.classList.remove("selected");
+        removeHandles(selectedBox);
+      }
+      selectedBox = box;
+      selectedBox.classList.add("selected");
+      createHandles(selectedBox);
+
+      document.getElementById("textContent").value = box.innerText;
+      document.getElementById("fontSize").value = parseInt(box.style.fontSize);
+      document.getElementById("fontColor").value = box.style.color;
+      document.getElementById("rotation").value = parseFloat(box.getAttribute("data-rotation"));
+      document.getElementById("bgColor").value = rgbToHex(box.style.backgroundColor);
+      document.getElementById("bgOpacity").value = getAlpha(box.style.backgroundColor);
+    }
+
+    function updateSelectedTextBox() {
+      if (!selectedBox) return;
+      selectedBox.innerText = document.getElementById("textContent").value;
+      selectedBox.style.fontSize = document.getElementById("fontSize").value + "px";
+      selectedBox.style.color = document.getElementById("fontColor").value;
+      const rot = document.getElementById("rotation").value;
+      const scale = selectedBox.getAttribute("data-scale");
+      selectedBox.setAttribute("data-rotation", rot);
+      selectedBox.style.transform = `scale(${scale}) rotate(${rot}deg)`;
+
+      const bg = document.getElementById("bgColor").value;
+      const opacity = document.getElementById("bgOpacity").value;
+      selectedBox.style.backgroundColor = hexToRgba(bg, opacity);
+    }
+
+    function toggleStyle(style) {
+      if (!selectedBox) return;
+
+      let active = false;
+      if (style === "bold") {
+        active = selectedBox.style.fontWeight === "bold";
+        selectedBox.style.fontWeight = active ? "normal" : "bold";
+      } else if (style === "italic") {
+        active = selectedBox.style.fontStyle === "italic";
+        selectedBox.style.fontStyle = active ? "normal" : "italic";
+      } else if (style === "underline") {
+        active = selectedBox.style.textDecoration === "underline";
+        selectedBox.style.textDecoration = active ? "none" : "underline";
+      }
+    }
+
+    function deleteTextBox() {
+      if (selectedBox) {
+        selectedBox.remove();
+        selectedBox = null;
+      }
+    }
+
+    function onPreviewClick(e) {
+      if (e.target === preview) {
+        if (selectedBox) {
+          selectedBox.classList.remove("selected");
+          removeHandles(selectedBox);
+          selectedBox = null;
+        }
+      }
+    }
+
+    function startDrag(e) {
+      if (!selectedBox || e.target.classList.contains("resize-handle") || e.target.classList.contains("rotate-handle")) return;
+      isDragging = true;
+      offsetX = e.offsetX;
+      offsetY = e.offsetY;
+      document.addEventListener("mousemove", drag);
+      document.addEventListener("mouseup", stopDrag);
+    }
+
+    function drag(e) {
+      if (!isDragging || !selectedBox) return;
+      const rect = preview.getBoundingClientRect();
+      selectedBox.style.left = (e.clientX - rect.left - offsetX) + "px";
+      selectedBox.style.top = (e.clientY - rect.top - offsetY) + "px";
+    }
+
+    function stopDrag() {
+      isDragging = false;
+      document.removeEventListener("mousemove", drag);
+      document.removeEventListener("mouseup", stopDrag);
+    }
+
+    function startResize(e) {
+      e.stopPropagation();
+      initialTransform = {
+        fontSize: parseFloat(selectedBox.style.fontSize),
+        scale: parseFloat(selectedBox.getAttribute("data-scale"))
+      };
+      initialMouse = { x: e.clientX, y: e.clientY };
+
+      document.addEventListener("mousemove", resize);
+      document.addEventListener("mouseup", stopResize);
+    }
+
+    function resize(e) {
+      const dx = e.clientX - initialMouse.x;
+      const dy = e.clientY - initialMouse.y;
+      const delta = Math.max(dx, dy);
+      const newScale = Math.max(0.2, initialTransform.scale + delta / 200);
+
+      selectedBox.setAttribute("data-scale", newScale);
+      const rot = selectedBox.getAttribute("data-rotation");
+      selectedBox.style.transform = `scale(${newScale}) rotate(${rot}deg)`;
+      selectedBox.style.fontSize = (initialTransform.fontSize * newScale).toFixed(2) + "px";
+    }
+
+    function stopResize() {
+      document.removeEventListener("mousemove", resize);
+      document.removeEventListener("mouseup", stopResize);
+    }
+
+    function startRotate(e) {
+      e.preventDefault();
+      const rect = selectedBox.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      document.onmousemove = function (ev) {
+        const angle = Math.atan2(ev.clientY - cy, ev.clientX - cx) * 180 / Math.PI;
+        selectedBox.setAttribute("data-rotation", angle.toFixed(2));
+        const scale = selectedBox.getAttribute("data-scale");
+        selectedBox.style.transform = `scale(${scale}) rotate(${angle}deg)`;
+        document.getElementById("rotation").value = angle.toFixed(2);
+      };
+      document.onmouseup = () => {
+        document.onmousemove = null;
+        document.onmouseup = null;
+      };
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        if (selectedBox) {
+          selectedBox.classList.remove("selected");
+          removeHandles(selectedBox);
+          selectedBox = null;
+        }
+      }
+    });
+
+    function rgbToHex(rgb) {
+      const res = rgb.match(/\d+/g);
+      if (!res) return "#ffffff";
+      return "#" + res.slice(0, 3).map(x => (+x).toString(16).padStart(2, "0")).join("");
+    }
+
+    function getAlpha(rgb) {
+      const res = rgb.match(/rgba?\(([^)]+)\)/);
+      if (!res) return 1;
+      const vals = res[1].split(",");
+      return vals.length === 4 ? parseFloat(vals[3]) : 1;
+    }
+
+    function hexToRgba(hex, opacity) {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+    }
+
+    function updatePreviewBackground() {
+      const color = document.getElementById("bgColorPicker").value;
+      const preview = document.getElementById("preview-container");
+      preview.style.backgroundColor = color;
+    }
+
+    function uploadPreviewBackground() {
+      const fileInput = document.getElementById("bgImageUploader");
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const overlay = document.getElementById("bg-wrapper");
+        overlay.style.backgroundImage = `url(${e.target.result})`;
+
+        // 자동 너비 맞춤: 미리보기 영역 기준
+        const preview = document.getElementById("preview-container");
+
+        const tempImage = new Image();
+        tempImage.onload = function () {
+          const previewWidth = preview.clientWidth;
+          const ratio = previewWidth / tempImage.width;
+
+          // background-size 계산을 위해 transform scale 사용
+          document.getElementById("bgScale").value = ratio.toFixed(2);
+          overlay.style.backgroundSize = "contain";
+          overlay.style.backgroundPosition = "50% 50%";
+          overlay.style.transform = `scale(${ratio}) rotate(0deg)`;
+          overlay.style.opacity = "1";
+
+          // 조절기 초기화
+          document.getElementById("bgPosX").value = 50;
+          document.getElementById("bgPosY").value = 50;
+          document.getElementById("bgOpacityRange").value = 1;
+          document.getElementById("bgRotate").value = 0;
+        };
+        tempImage.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function resetPreviewBackground() {
+      const preview = document.getElementById("preview-container");
+      preview.style.backgroundColor = "#fefefe";
+      preview.style.backgroundImage = "none";
+      document.getElementById("bgColorPicker").value = "#fefefe";
+      document.getElementById("bgImageUploader").value = null;
+    }
+
+    preview.addEventListener("mousedown", (e) => {
+      // 텍스트박스 선택 안 된 경우만
+      if (!selectedTextBox) {
+        isDraggingBackground = true;
+        startX = e.clientX;
+        startY = e.clientY;
+      }
+    });
+
+    preview.addEventListener("mouseup", () => {
+      isDraggingBackground = false;
+    });
+
+    preview.addEventListener("mouseleave", () => {
+      isDraggingBackground = false;
+    });
+
+    preview.addEventListener("mousemove", (e) => {
+      if (!isDraggingBackground) return;
+
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+
+      startX = e.clientX;
+      startY = e.clientY;
+
+      let bgX = parseFloat(preview.dataset.bgPosX || 50);
+      let bgY = parseFloat(preview.dataset.bgPosY || 50);
+
+      const containerRect = preview.getBoundingClientRect();
+
+      bgX += (dx / containerRect.width) * 100;
+      bgY += (dy / containerRect.height) * 100;
+
+      bgX = Math.max(0, Math.min(100, bgX));
+      bgY = Math.max(0, Math.min(100, bgY));
+
+      preview.dataset.bgPosX = bgX;
+      preview.dataset.bgPosY = bgY;
+
+      preview.style.backgroundPosition = `${bgX}% ${bgY}%`;
+    });
+
+    // 배경 관련 조절 함수
+    function adjustBackground() {
+      const imgWrapper = document.getElementById("bg-wrapper");
+      const opacity = document.getElementById("bgOpacityRange").value;
+      const posX = document.getElementById("bgPosX").value;
+      const posY = document.getElementById("bgPosY").value;
+      const rotate = document.getElementById("bgRotate").value;
+      const scale = document.getElementById("bgScale").value;
+
+      imgWrapper.style.opacity = opacity;
+      imgWrapper.style.backgroundPosition = `${posX}% ${posY}%`;
+      imgWrapper.style.transform = `scale(${scale}) rotate(${rotate}deg)`;
+    }
+
+    function saveAsImage() {
+      // ✨ 선택 해제
+      if (selectedBox) {
+        selectedBox.classList.remove("selected");
+        removeHandles(selectedBox);
+        selectedBox = null;
+      }
+
+      const preview = document.getElementById("preview-container");
+
+      // ✨ 약간의 지연 후 캡처 (DOM 반영 시간 확보)
+      setTimeout(() => {
+        html2canvas(preview, {
+          backgroundColor: null,
+          useCORS: true
+        }).then((canvas) => {
+          const link = document.createElement("a");
+          link.download = "preview.png";
+          link.href = canvas.toDataURL();
+          link.click();
+        });
+      }, 100); // 100ms 지연 (선택 해제 후 렌더링 안정화)
+    }
+  </script>
+</div>
+

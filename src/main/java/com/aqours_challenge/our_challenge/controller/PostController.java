@@ -90,4 +90,9 @@ public class PostController {
         model.addAttribute("memberName", memberName);
         return "post/detail-post";
     }
+
+    @GetMapping("/image")
+    public String imgPost() {
+        return "post/make-image";
+    }
 }
