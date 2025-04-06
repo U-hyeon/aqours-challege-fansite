@@ -31,16 +31,6 @@
 <!-- fragments/story-editor.html -->
 <div layout:fragment="content">
   <style>
-    #preview-container {
-      position: relative;
-      width: 400px;
-      height: 700px;
-      border: 2px solid #ccc;
-      background: #fefefe;
-      margin: 0 auto;
-      overflow: hidden;
-    }
-
     .text-box {
       position: absolute;
       cursor: move;
@@ -93,12 +83,19 @@
       margin: 2px;
     }
 
-    #bg-wrapper {
+    #bgPosX {
       position: absolute;
-      top: 50%;  /* 중앙 정렬을 위한 기준점 */
+      width: 400px;
+      transform: translateX(-50%);
       left: 50%;
-      width: 100%;
-      height: 100%;
+    }
+
+    #bg-wrapper {
+      position: relative;
+      /*top: 50%;  !* 중앙 정렬을 위한 기준점 *!*/
+      /*left: 50%;*/
+      width: 400px;
+      height: 300px;
       background-repeat: no-repeat;
       background-size: contain;
       background-position: center;
@@ -109,8 +106,8 @@
 
     #preview-container {
       position: relative;
-      width: 400px;
-      height: 300px;
+      width: auto;
+      height: auto;
       background-color: #fefefe;
       overflow: hidden;
       margin: auto;
@@ -119,14 +116,10 @@
 
   </style>
 
-  <!-- 텍스트 삭제 버튼 상단으로 이동 -->
-  <div style="text-align: center; margin-bottom: 10px;">
-    <button onclick="addTextBox()">텍스트 추가</button>
-    <button onclick="deleteTextBox()">선택 텍스트 삭제</button>
-  </div>
-
   <!-- 배경 이미지 및 조절 UI -->
   <div style="text-align: center; margin-bottom: 10px;">
+    <button onclick="resetPreviewBackground()">배경 초기화</button>
+    <br>
     <label>배경 색상: </label>
     <input type="color" id="bgColorPicker" oninput="updatePreviewBackground()" />
     <label>배경 이미지: </label>
@@ -134,40 +127,60 @@
     <br>
     <label>배경 투명도:</label>
     <input type="range" id="bgOpacityRange" min="0" max="1" step="0.05" value="1" oninput="adjustBackground()" />
-    <label>X 위치:</label>
-    <input type="range" id="bgPosX" min="0" max="100" value="50" oninput="adjustBackground()" />
-    <label>Y 위치:</label>
-    <input type="range" id="bgPosY" min="0" max="100" value="50" oninput="adjustBackground()" />
     <label>기울기:</label>
     <input type="range" id="bgRotate" min="-180" max="180" value="0" oninput="adjustBackground()" />
     <label>크기:</label>
-    <input type="range" id="bgScale" min="0.1" max="3" step="0.05" value="1" oninput="adjustBackground()" />
-    <br/>
-    <button onclick="resetPreviewBackground()">배경 초기화</button>
-  </div>
-
-  <div style="text-align: center; margin-top: 10px;">
-    <button onclick="saveAsImage()">이미지로 저장</button>
+    <input type="range" id="bgScale" min="0.1" max="5" step="0.05" value="1" oninput="adjustBackground()" />
   </div>
 
   <!-- 미리보기 컨테이너에 배경 오버레이 추가 -->
-  <div id="preview-container">
-    <div id="bg-wrapper">
+<!--  <label>X 위치:</label>-->
+  <input type="range" id="bgPosX" min="-500" max="500" value="0" oninput="adjustBackground()" />
+  <div style="display: flex; padding: 30px 20px 10px 40px;">
+    <div id="preview-container">
+      <div id="bg-wrapper">
+      </div>
     </div>
+    <input type="range" id="bgPosY" min="-500" max="500" value="0" style="writing-mode: vertical-lr" oninput="adjustBackground()" />
   </div>
 
-  <div id="text-editor" style="text-align: center; margin-top: 20px;">
+  <div style="text-align: center; padding: 10px;">
+    <button onclick="saveAsImage()">이미지로 저장</button>
+  </div>
+
+  <div id="text-editor" style="text-align: center; padding: 10px; border-top: #eeeeee 1px ridge">
+    <button onclick="addTextBox()">텍스트 추가</button>
+    <button onclick="deleteTextBox()">선택 텍스트 삭제</button>
     <div>
       <label>내용:</label>
       <input type="text" id="textContent" oninput="updateSelectedTextBox()" />
+      <span class="style-buttons">
+        <button onclick="toggleStyle('bold')">Bold</button>
+        <button onclick="toggleStyle('italic')">Italic</button>
+        <button onclick="toggleStyle('underline')">Underline</button>
+      </span>
     </div>
     <div>
       <label>폰트 크기:</label>
-      <input type="number" id="fontSize" oninput="updateSelectedTextBox()" />
+      <input type="number" id="fontSize" style="width: 50px" oninput="updateSelectedTextBox()" />
+      <label style="margin-left: 10px;">글씨체:</label>
+      <select id="fontFamily" onchange="updateSelectedTextBox()">
+        <option value="Arial">Arial</option>
+        <option value="Verdana">Verdana</option>
+        <option value="Tahoma">Tahoma</option>
+        <option value="Courier New">Courier New</option>
+        <option value="Georgia">Georgia</option>
+        <option value="Times New Roman">Times New Roman</option>
+        <option value="Gulim">Gulim</option>
+        <option value="Dotum">Dotum</option>
+        <option value="Malgun Gothic">Malgun Gothic</option>
+      </select>
     </div>
     <div>
       <label>색상:</label>
       <input type="color" id="fontColor" oninput="updateSelectedTextBox()" />
+      <label>회전:</label>
+      <input type="range" min="-180" max="180" id="rotation" oninput="updateSelectedTextBox()" />
     </div>
     <div>
       <label>배경색:</label>
@@ -175,16 +188,6 @@
       <label>투명도:</label>
       <input type="range" id="bgOpacity" min="0" max="1" step="0.05" oninput="updateSelectedTextBox()" />
     </div>
-    <div>
-      <label>회전:</label>
-      <input type="range" min="-180" max="180" id="rotation" oninput="updateSelectedTextBox()" />
-    </div>
-    <div class="style-buttons">
-      <button onclick="toggleStyle('bold')">Bold</button>
-      <button onclick="toggleStyle('italic')">Italic</button>
-      <button onclick="toggleStyle('underline')">Underline</button>
-    </div>
-    <button onclick="deleteTextBox()">삭제</button>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -262,6 +265,7 @@
       document.getElementById("rotation").value = parseFloat(box.getAttribute("data-rotation"));
       document.getElementById("bgColor").value = rgbToHex(box.style.backgroundColor);
       document.getElementById("bgOpacity").value = getAlpha(box.style.backgroundColor);
+      document.getElementById("fontFamily").value = box.style.fontFamily || "Arial";
     }
 
     function updateSelectedTextBox() {
@@ -269,6 +273,8 @@
       selectedBox.innerText = document.getElementById("textContent").value;
       selectedBox.style.fontSize = document.getElementById("fontSize").value + "px";
       selectedBox.style.color = document.getElementById("fontColor").value;
+      selectedBox.style.fontFamily = document.getElementById("fontFamily").value;
+
       const rot = document.getElementById("rotation").value;
       const scale = selectedBox.getAttribute("data-scale");
       selectedBox.setAttribute("data-rotation", rot);
@@ -432,21 +438,25 @@
 
         const tempImage = new Image();
         tempImage.onload = function () {
-          const previewWidth = preview.clientWidth;
-          const ratio = previewWidth / tempImage.width;
+          const previewX = preview.clientWidth;
+          const previewY = preview.clientHeight;
+          const ratioX = tempImage.width / previewX;
+          const ratioY = tempImage.height / previewY;
+          console.log(ratioX, previewX, tempImage.width);
 
           // background-size 계산을 위해 transform scale 사용
-          document.getElementById("bgScale").value = ratio.toFixed(2);
+          document.getElementById("bgScale").value = ratioX.toFixed(2);
           overlay.style.backgroundSize = "contain";
           overlay.style.backgroundPosition = "50% 50%";
-          overlay.style.transform = `scale(${ratio}) rotate(0deg)`;
-          overlay.style.opacity = "1";
+          overlay.style.transform = `translate(${ratioX}%, ${ratioY}%) scale(${ratioX}) rotate(0deg)`;
+          overlay.style.opacity = "0.5";
 
           // 조절기 초기화
-          document.getElementById("bgPosX").value = 50;
-          document.getElementById("bgPosY").value = 50;
-          document.getElementById("bgOpacityRange").value = 1;
+          document.getElementById("bgPosX").value = ratioX;
+          document.getElementById("bgPosY").value = ratioY;
+          document.getElementById("bgOpacityRange").value = 0.5;
           document.getElementById("bgRotate").value = 0;
+          document.getElementById("bgScale").value = ratioX;
         };
         tempImage.src = e.target.result;
       };
@@ -457,8 +467,23 @@
       const preview = document.getElementById("preview-container");
       preview.style.backgroundColor = "#fefefe";
       preview.style.backgroundImage = "none";
+
+      // 배경 조정용 bg-wrapper 요소도 초기화
+      const bgWrapper = document.getElementById("bg-wrapper");
+      if (bgWrapper) {
+        bgWrapper.style.backgroundImage = "none";
+        bgWrapper.style.transform = "translate(0px, 0px) scale(1) rotate(0deg)";
+        bgWrapper.style.opacity = 1;
+      }
+
+      // UI 요소 초기화
       document.getElementById("bgColorPicker").value = "#fefefe";
       document.getElementById("bgImageUploader").value = null;
+      document.getElementById("bgPosX").value = 0;
+      document.getElementById("bgPosY").value = 0;
+      document.getElementById("bgRotate").value = 0;
+      document.getElementById("bgScale").value = 1;
+      document.getElementById("bgOpacityRange").value = 1;
     }
 
     preview.addEventListener("mousedown", (e) => {
@@ -518,7 +543,6 @@
       // 중심 기준 회전 및 크기 조정, 이후 이동 적용
       overlay.style.transformOrigin = "center center";
       overlay.style.transform =
-              `translate(-50%, -50%) ` +   // 중심 정렬
               `translate(${posX}%, ${posY}%) ` +  // 위치 이동
               `scale(${scale}) ` +
               `rotate(${rotate}deg)`;
