@@ -117,13 +117,12 @@
   </style>
 
   <!-- 배경 이미지 및 조절 UI -->
-  <div style="text-align: center; margin-bottom: 10px;">
-    <button onclick="resetPreviewBackground()">배경 초기화</button>
-    <br>
-    <label>배경 색상: </label>
+  <div style="text-align: left; margin-bottom: 10px; border-bottom: #eeeeee 1px ridge">
+    <label>배경 : </label>
     <input type="color" id="bgColorPicker" oninput="updatePreviewBackground()" />
-    <label>배경 이미지: </label>
+    <label>|</label>
     <input type="file" id="bgImageUploader" accept="image/*" onchange="uploadPreviewBackground()" />
+    <button onclick="resetPreviewBackground()">배경 초기화</button>
     <br>
     <label>배경 투명도:</label>
     <input type="range" id="bgOpacityRange" min="0" max="1" step="0.05" value="1" oninput="adjustBackground()" />
