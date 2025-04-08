@@ -3,6 +3,7 @@ package com.aqours_challenge.our_challenge.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,16 @@ import java.time.LocalDate;
 @Controller
 @RequestMapping("/gallery")
 public class GalleryController {
+    @GetMapping
+    public String gallery(Model model) {
+        return "gallery/search-image";
+    }
+
+    @GetMapping("/new")
+    public String newImage() {
+        return "post/make-image";
+    }
+
     @PostMapping("/image")
     public ResponseEntity<String> uploadPost(@RequestParam("image") MultipartFile imageFile) {
         try {

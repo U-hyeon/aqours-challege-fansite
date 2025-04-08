@@ -35,12 +35,18 @@
               <span class="en">HELP</span>
             </a>
           </li>
-          <li sec:authorize="hasAnyAuthority('ROLE_ADMIN')"> <!-- 관리자 권한 -->
-            <a class="admin" href="/admin">
-              <span class="jp">관리자 메뉴</span>
-              <span class="en">ADMIN</span>
+          <li sec:authorize="isAuthenticated()">
+            <a class="gallery" href="/gallery">
+              <span class="jp">갤러리</span>
+              <span class="en">GALLERY</span>
             </a>
           </li>
+<!--          <li sec:authorize="hasAnyAuthority('ROLE_ADMIN')"> &lt;!&ndash; 관리자 권한 &ndash;&gt;-->
+<!--            <a class="admin" href="/admin">-->
+<!--              <span class="jp">관리자 메뉴</span>-->
+<!--              <span class="en">ADMIN</span>-->
+<!--            </a>-->
+<!--          </li>-->
         </ul>
         <p class="account login">
           <a sec:authorize="isAnonymous()" href="/members/login">LOGIN</a>
@@ -54,6 +60,9 @@
         <ul>
           <li>
             <a href="/mypage">MY PAGE</a>
+          </li>
+          <li sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
+            <a href="/admin">관리자 메뉴</a>
           </li>
           <li >
             <a href="/members/logout">LOGOUT</a>
@@ -83,6 +92,8 @@
         document.querySelector(".main-nav .post").closest("li").className = 'active';
       } else if (location.href.includes('/help')) {
         document.querySelector(".main-nav .help").closest("li").className = 'active';
+      } else if (location.href.includes('/gallery')) {
+        document.querySelector(".main-nav .gallery").closest("li").className = 'active';
       } else if (location.href.includes('/admin')) {
         document.querySelector(".main-nav .admin").closest("li").className = 'active';
       } else {
