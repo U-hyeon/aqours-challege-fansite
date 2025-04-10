@@ -64,7 +64,7 @@ public class GalleryController {
             Files.createDirectories(savePath.getParent());
             imageFile.transferTo(savePath.toFile());
 
-            Img img = Img.createImg(memberId, galleryDir.toString(), filename);
+            Img img = Img.createImg(memberId, "gallery", filename);
             Img result = imgService.saveImage(img);
 
             return ResponseEntity.ok("Saved: " + result.getImg_file_name());
