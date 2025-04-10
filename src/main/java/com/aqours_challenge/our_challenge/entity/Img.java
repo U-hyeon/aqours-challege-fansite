@@ -11,7 +11,7 @@ public class Img {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long img_id;
     private Long member_id;
-    private String location;
+    private String img_location;
     private String img_file_name;
     private LocalDateTime createdTime;
     private String deleteFlag;
@@ -32,12 +32,12 @@ public class Img {
         this.member_id = member_id;
     }
 
-    public String getLocation() {
-        return location;
+    public String getImg_location() {
+        return img_location;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setImg_location(String location) {
+        this.img_location = location;
     }
 
     public String getImg_file_name() {
@@ -67,7 +67,7 @@ public class Img {
     public static Img createImg(Long memberId, String location, String img_file_name) {
         Img img = new Img();
         img.setMember_id(memberId);
-        img.setLocation(location);
+        img.setImg_location(location);
         img.setImg_file_name(img_file_name);
         img.setCreatedTime(LocalDateTime.now());
         img.setDeleteFlag("N");

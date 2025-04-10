@@ -19,6 +19,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Controller
 @RequestMapping("/gallery")
@@ -51,15 +53,18 @@ public class GalleryController {
         Long memberId = memberService.findMemberByEmail(currentUserEmail).getMemberId();
 
         try {
-            // 파일 저장 경로 (예: /uploads/2025-04-06_post.png)
-            String filename = LocalDate.now() + memberId.toString() + "_gallery.png";
-            String location = "gallery";
+            // 프로젝트 외부의 gallery 폴더 경로 설정
+            Path workspaceDir = Paths.get("").toAbsolutePath().getParent();       // 리포지토리와 동일한 depth 에 저장
+            Path galleryDir = workspaceDir.resolve("gallery");                    // gallery 디렉토리 안에 저장
+            String filename = "gallery_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_SSS")) + "_"
+                    + String.format("%10s", memberId.toString()).replace(" ", "0")
+                    + ".png";
+            Path savePath = galleryDir.resolve(filename);
 
-            Path savePath = Paths.get(location, filename);
             Files.createDirectories(savePath.getParent());
             imageFile.transferTo(savePath.toFile());
 
-            Img img = Img.createImg(memberId, location, filename);
+            Img img = Img.createImg(memberId, galleryDir.toString(), filename);
             Img result = imgService.saveImage(img);
 
             return ResponseEntity.ok("Saved: " + result.getImg_file_name());
