@@ -79,8 +79,15 @@
       margin: 4px;
     }
 
+    button {
+      padding: 0 5px;
+    }
+
     .style-buttons button {
       margin: 2px;
+      width:30px;
+      font-size:1rem;
+      font-family: Serif,serif;
     }
 
     #bgPosX {
@@ -134,17 +141,18 @@
 
   <!-- 미리보기 컨테이너에 배경 오버레이 추가 -->
 <!--  <label>X 위치:</label>-->
-  <input type="range" id="bgPosX" min="-500" max="500" value="0" oninput="adjustBackground()" />
+  <input type="range" id="bgPosX" min="-300" max="300" value="0" oninput="adjustBackground()" />
   <div style="display: flex; padding: 30px 20px 10px 40px;">
     <div id="preview-container">
       <div id="bg-wrapper">
       </div>
     </div>
-    <input type="range" id="bgPosY" min="-500" max="500" value="0" style="writing-mode: vertical-lr" oninput="adjustBackground()" />
+    <input type="range" id="bgPosY" min="-300" max="300" value="0" style="writing-mode: vertical-lr" oninput="adjustBackground()" />
   </div>
 
   <div style="text-align: center; padding: 10px;">
     <button onclick="saveAsImage()">이미지로 저장</button>
+    <button onclick="uploadPost()">게시물 작성</button>
   </div>
 
   <div id="text-editor" style="text-align: center; padding: 10px; border-top: #eeeeee 1px ridge">
@@ -154,9 +162,9 @@
       <label>내용:</label>
       <input type="text" id="textContent" oninput="updateSelectedTextBox()" />
       <span class="style-buttons">
-        <button onclick="toggleStyle('bold')">Bold</button>
-        <button onclick="toggleStyle('italic')">Italic</button>
-        <button onclick="toggleStyle('underline')">Underline</button>
+        <button onclick="toggleStyle('bold')" style="font-weight:bold;">B</button>
+        <button onclick="toggleStyle('italic')" style="font-style: italic;">I</button>
+        <button onclick="toggleStyle('underline')" style="text-decoration: underline;">U</button>
       </span>
     </div>
     <div>
@@ -188,6 +196,10 @@
       <input type="range" id="bgOpacity" min="0" max="1" step="0.05" oninput="updateSelectedTextBox()" />
     </div>
   </div>
+
+  <input type="hidden" class="token" th:name="${_csrf.parameterName}"
+         th:value="${_csrf.token}"
+  >
 
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
@@ -569,6 +581,37 @@
           link.click();
         });
       }, 100); // 100ms 지연 (선택 해제 후 렌더링 안정화)
+    }
+
+    function uploadPost() {
+      const preview = document.getElementById("preview-container");
+
+      html2canvas(preview).then(canvas => {
+        canvas.toBlob(blob => {
+          const formData = new FormData();
+          formData.append("image", blob, "post.png");
+          const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+          const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+          fetch("/gallery/image", {
+            method: "POST",
+            headers: {
+              [csrfHeader]: csrfToken
+            },
+            body: formData
+          }).then(response => {
+            if (response.ok) {
+              alert("게시물이 성공적으로 업로드되었습니다!");
+              location.replace("/gallery");
+            } else {
+              alert("업로드에 실패했습니다.");
+            }
+          }).catch(err => {
+            console.error(err);
+            alert("서버 오류로 업로드에 실패했습니다.");
+          });
+        }, "image/png");
+      });
     }
   </script>
 </div>
