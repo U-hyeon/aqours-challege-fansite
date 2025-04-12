@@ -602,6 +602,7 @@
           }).then(response => {
             if (response.ok) {
               alert("게시물이 성공적으로 업로드되었습니다!");
+              location.replace("/gallery");
             } else {
               alert("업로드에 실패했습니다.");
             }
