@@ -9,5 +9,16 @@
 </head>
 <body>
 <div layout:fragment="content">
+  <div class="row">
+    <th:block th:each="imgContent: ${images}">
+      <div class="col-md-4 margin">
+        <div class="card">
+          <a th:href="'/images/' + ${imgContent.getImgFileName()}" class="text-dark">
+            <img th:src="@{'/images/' + ${imgContent.getImgFileName()}}" height="200">
+          </a>
+        </div>
+      </div>
+    </th:block>
+  </div>
   <button onclick="location.href='/gallery/new';">작성</button>
 </div>

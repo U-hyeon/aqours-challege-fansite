@@ -1,8 +1,13 @@
 package com.aqours_challenge.our_challenge.controller;
 
+import com.aqours_challenge.our_challenge.dto.ImgDto;
 import com.aqours_challenge.our_challenge.entity.Img;
 import com.aqours_challenge.our_challenge.service.ImgService;
 import com.aqours_challenge.our_challenge.service.MemberService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,9 +23,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/gallery")
@@ -34,7 +39,11 @@ public class GalleryController {
     }
 
     @GetMapping
-    public String gallery(Model model) {
+    public String gallery(ImgDto imgDto, Optional<Integer> page, Model model) {
+        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 9);
+        Page<ImgDto> imgPage = imgService.getGalleryImages(imgDto, pageable);
+        model.addAttribute("images", imgPage);
+
         return "gallery/search-image";
     }
 
