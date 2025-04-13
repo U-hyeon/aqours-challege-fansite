@@ -2,7 +2,7 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/header-content}">
+      layout:decorate="~{layouts/header-content}" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
   <!-- jQuery CDN 추가 -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -13,24 +13,6 @@
     .fieldError {
       color: #bd2130;
     }
-  </style>
-</th:block>
-
-<!-- 사용자 스크립트 추가 -->
-<th:block layout:fragment="script">
-  <script th:inline="javascript">
-    // $(document).ready(function() {
-    //   var errorMessage = [[${errorMessage}]];
-    //   if (errorMessage != null) {
-    //     alert(errorMessage);
-    //   }
-    // });
-  </script>
-</th:block>
-
-<!-- fragments/story-editor.html -->
-<div layout:fragment="content">
-  <style>
     .text-box {
       position: absolute;
       cursor: move;
@@ -120,16 +102,32 @@
       margin: auto;
       border: 1px solid #ccc;
     }
-
   </style>
+</th:block>
 
+<!-- 사용자 스크립트 추가 -->
+<th:block layout:fragment="script">
+  <script th:inline="javascript">
+    // $(document).ready(function() {
+    //   var errorMessage = [[${errorMessage}]];
+    //   if (errorMessage != null) {
+    //     alert(errorMessage);
+    //   }
+    // });
+  </script>
+</th:block>
+
+<!-- fragments/story-editor.html -->
+<div layout:fragment="content">
+  <div class="title">
+    갤러리
+  </div>
   <!-- 배경 이미지 및 조절 UI -->
-  <div style="text-align: left; margin-bottom: 10px; border-bottom: #eeeeee 1px ridge">
+  <div style="text-align: left; padding-bottom: 10px; margin-bottom: 10px; border-bottom: #eeeeee 1px ridge">
     <label>배경 : </label>
     <input type="color" id="bgColorPicker" oninput="updatePreviewBackground()" />
     <label>|</label>
     <input type="file" id="bgImageUploader" accept="image/*" onchange="uploadPreviewBackground()" />
-    <button onclick="resetPreviewBackground()">배경 초기화</button>
     <br>
     <label>배경 투명도:</label>
     <input type="range" id="bgOpacityRange" min="0" max="1" step="0.05" value="1" oninput="adjustBackground()" />
@@ -137,6 +135,9 @@
     <input type="range" id="bgRotate" min="-180" max="180" value="0" oninput="adjustBackground()" />
     <label>크기:</label>
     <input type="range" id="bgScale" min="0.1" max="5" step="0.05" value="1" oninput="adjustBackground()" />
+    <div style="display: flex; justify-content: center;">
+      <button onclick="resetPreviewBackground()">배경 초기화</button>
+    </div>
   </div>
 
   <!-- 미리보기 컨테이너에 배경 오버레이 추가 -->
@@ -151,7 +152,7 @@
   </div>
 
   <div style="text-align: center; padding: 10px;">
-    <button onclick="saveAsImage()">이미지로 저장</button>
+    <button sec:authorize="hasAnyAuthority('ROLE_ADMIN')" onclick="saveAsImage()">이미지로 저장</button>
     <button onclick="uploadPost()">게시물 작성</button>
   </div>
 
@@ -559,30 +560,6 @@
               `rotate(${rotate}deg)`;
     }
 
-    function saveAsImage() {
-      // ✨ 선택 해제
-      if (selectedBox) {
-        selectedBox.classList.remove("selected");
-        removeHandles(selectedBox);
-        selectedBox = null;
-      }
-
-      const preview = document.getElementById("preview-container");
-
-      // ✨ 약간의 지연 후 캡처 (DOM 반영 시간 확보)
-      setTimeout(() => {
-        html2canvas(preview, {
-          backgroundColor: null,
-          useCORS: true
-        }).then((canvas) => {
-          const link = document.createElement("a");
-          link.download = "preview.png";
-          link.href = canvas.toDataURL();
-          link.click();
-        });
-      }, 100); // 100ms 지연 (선택 해제 후 렌더링 안정화)
-    }
-
     function uploadPost() {
       const preview = document.getElementById("preview-container");
 
@@ -612,6 +589,31 @@
           });
         }, "image/png");
       });
+    }
+  </script>
+  <script sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
+    function saveAsImage() {
+      // ✨ 선택 해제
+      if (selectedBox) {
+        selectedBox.classList.remove("selected");
+        removeHandles(selectedBox);
+        selectedBox = null;
+      }
+
+      const preview = document.getElementById("preview-container");
+
+      // ✨ 약간의 지연 후 캡처 (DOM 반영 시간 확보)
+      setTimeout(() => {
+        html2canvas(preview, {
+          backgroundColor: null,
+          useCORS: true
+        }).then((canvas) => {
+          const link = document.createElement("a");
+          link.download = "preview.png";
+          link.href = canvas.toDataURL();
+          link.click();
+        });
+      }, 100); // 100ms 지연 (선택 해제 후 렌더링 안정화)
     }
   </script>
 </div>

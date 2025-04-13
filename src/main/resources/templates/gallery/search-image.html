@@ -9,6 +9,9 @@
 </head>
 <body>
 <div layout:fragment="content">
+  <div class="title">
+    게시판
+  </div>
   <div class="image-area">
     <th:block th:each="imgContent, count: ${images}">
       <a th:href="'/images/' + ${imgContent.getImgFileName()}" class="text-dark">
@@ -17,5 +20,7 @@
       <div class="w-100" th:if="${count.index%3 == 2}"></div>
     </th:block>
   </div>
-  <button onclick="location.href='/gallery/new';">작성</button>
+  <div class="action-area">
+    <button onclick="location.href='/gallery/new';">작성</button>
+  </div>
 </div>

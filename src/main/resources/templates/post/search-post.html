@@ -9,6 +9,9 @@
 </head>
 <body>
 <div layout:fragment="content">
+  <div class="title">
+    게시판
+  </div>
   <div class="search-bar">
     <div class="search-type">검색 방식 선택</div>
     <input class="search-box" id="keyword" placeholder="검색어를 입력하세요">
@@ -39,8 +42,10 @@
         </tr>
       </th:block>
     </table>
-    <button onclick="location.href='/posts/new'">글쓰기</button>
-    <button>버튼3</button>
+    <div class="action-area">
+      <button onclick="location.href='/posts/new'">글쓰기</button>
+      <button>버튼3</button>
+    </div>
 </div>
 </body>
 <script>

@@ -36,7 +36,9 @@ body {
     }
 }
 #container {
-    padding-top: 125px;
+    display: flex;
+    justify-content: center;
+    padding-top: 150px;
     width: 1020px;
     margin: auto;
     position: relative;
@@ -225,3 +227,19 @@ header .account-dropdown li a:hover {
     opacity: 1.0;
     color: #fff;
     background: #18b6ff; }
+.title {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    font-size: 30px;
+    font-weight: bold;
+    color: #18b6ff;
+}
+.action-area {
+    display: flex;
+    justify-content: right;
+    padding: 1rem;
+    margin: 1rem;
+    border-top: 1px solid;
+    border-color: #918979;
+}
