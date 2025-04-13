@@ -71,9 +71,9 @@
       </nav>
     </nav>
   </div>
-  <script>
+  <script sec:authorize="isAuthenticated()">
     <!-- login-user-menu -->
-    document.querySelector(".account .menu").addEventListener("click", function() {
+    document.querySelector(".account a").addEventListener("click", function() {
       const dropdown = document.querySelector(".account-dropdown");
       if(dropdown != null) {
         if (dropdown.style.display === 'none') {
@@ -83,7 +83,8 @@
         }
       }
     });
-
+  </script>
+  <script>
     <!-- menu on -->
     document.addEventListener("DOMContentLoaded", function() {
       if (location.href.includes('/notice')) {
