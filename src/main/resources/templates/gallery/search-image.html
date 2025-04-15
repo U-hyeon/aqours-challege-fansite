@@ -23,4 +23,22 @@
   <div class="action-area">
     <button onclick="location.href='/gallery/new';">작성</button>
   </div>
+  <!-- 페이지 네비게이션 -->
+  <div class="pagination">
+    <ul style="list-style:none; display:flex; gap:5px; justify-content:center; padding:0;">
+      <li th:if="${images.hasPrevious()}">
+        <a th:href="@{|/gallery?page=${images.number - 1}|}">이전</a>
+      </li>
+
+      <li th:each="i : ${#numbers.sequence(0, images.totalPages - 1)}"
+          th:classappend="${images.number == i} ? 'active'">
+        <a th:href="@{|/gallery?page=${i}|}"
+           th:text="${i + 1}"></a>
+      </li>
+
+      <li th:if="${images.hasNext()}">
+        <a th:href="@{|/gallery?page=${images.number + 1}|}">다음</a>
+      </li>
+    </ul>
+  </div>
 </div>
