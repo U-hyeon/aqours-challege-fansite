@@ -14,4 +14,6 @@ public interface ImgRepository extends JpaRepository<Img, Long> {
             "from Img i " +
             "where i.deleteFlag='N' order by i.createdTime desc")
     Page<ImgDto> getGalleryImages(ImgDto imgDto, Pageable pageable);
+
+    Img getById(Long id);
 }

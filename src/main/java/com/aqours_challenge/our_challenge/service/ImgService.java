@@ -30,4 +30,11 @@ public class ImgService {
 
         return all;
     }
+
+    @Transactional(readOnly = true)
+    public ImgDto getGalleryImageById(Long id) {
+        Img img = imgRepository.getById(id);
+        ImgDto imgDto = new ImgDto(id, img.getImg_file_name());
+        return imgDto;
+    }
 }
