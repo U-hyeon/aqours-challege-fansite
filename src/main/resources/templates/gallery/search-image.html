@@ -40,7 +40,7 @@
       modal.style.display = "block";
 
       // ajax 요청
-      const id = elem.getAttribute("id");
+      var id = elem.getAttribute("id");
       var csrfToken = $('meta[name="_csrf"]').attr('content');  // meta 태그에서 CSRF 토큰을 가져옴
       var csrfHeader = $('meta[name="_csrf_header"]').attr('content');  // CSRF 헤더 이름 가져오기
 
@@ -57,7 +57,7 @@
         },
         success: function (data, status, xhr) {
           console.log(data);
-          modalImg.src = `/images/${data.image.imgFileName}?v=${new Date().getTime()}`;
+          modalImg.src = `/images/${data.image.imgFileName}`;
           return;
         },
         error: function(data, status, err) {
@@ -70,6 +70,8 @@
 
     function closeModal() {
       document.getElementById("imageModal").style.display = "none";
+      const modalImg = document.getElementById("modalImage");
+      modalImg.src = 'none';
     }
 
     // ESC 키로 닫기
