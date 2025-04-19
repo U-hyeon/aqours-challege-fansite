@@ -29,13 +29,43 @@
 
 <!-- 사용자 스크립트 추가 -->
 <th:block layout:fragment="script">
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
   <script th:inline="javascript">
     function openModal(elem) {
-      const imgSrc = elem.getAttribute("data-img");
       const modal = document.getElementById("imageModal");
       const modalImg = document.getElementById("modalImage");
       modal.style.display = "block";
-      modalImg.src = imgSrc;
+
+      // ajax 요청
+      const id = elem.getAttribute("id");
+      var csrfToken = $('meta[name="_csrf"]').attr('content');  // meta 태그에서 CSRF 토큰을 가져옴
+      var csrfHeader = $('meta[name="_csrf_header"]').attr('content');  // CSRF 헤더 이름 가져오기
+
+      $.ajax({
+        url: "/api/image",
+        type: "POST",
+        data: JSON.stringify({
+          imageId: id,
+        }),
+        contentType:"application/json",
+        beforeSend: function(xhr) {
+          // CSRF 토큰을 헤더에 추가
+          xhr.setRequestHeader(csrfHeader, csrfToken);
+        },
+        success: function (data, status, xhr) {
+          console.log(data);
+          modalImg.src = `/images/${data.image.imgFileName}?v=${new Date().getTime()}`;
+          return;
+        },
+        error: function(data, status, err) {
+          console.error(err);
+          alert("error!");
+          return;
+        }
+      })
     }
 
     function closeModal() {
@@ -58,7 +88,9 @@
     <th:block th:each="imgContent, count: ${images}">
       <a href="javascript:void(0);"
          th:attr="data-img='/images/' + ${imgContent.getImgFileName()}"
-         onclick="openModal(this)">
+         onclick="openModal(this)"
+         th:id="${imgContent.getImgId()}"
+      >
         <img th:src="@{'/images/' + ${imgContent.getImgFileName()}}" style="width:200px; height:auto; object-fit: contain">
       </a>
       <div class="w-100" th:if="${count.index%3 == 2}"></div>
