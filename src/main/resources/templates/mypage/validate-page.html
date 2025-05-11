@@ -60,12 +60,12 @@
 </th:block>
 <body>
     <div layout:fragment="content">
-        <div>마이페이지 2차 로그인</div>
-        <div>이메일</div>
+        <div class="title">CONFIRMATION</div>
+        <div><b>ID</b><span style="color: #777777;">(email)</span></div>
         <div id="email" th:text="${currentUserEmail}"></div>
-        <div>비밀번호</div>
-        <input type="text" id="password">
-        <button class="btn validate" onclick="validate();">확인</button>
+        <div><b>Password</b></div>
+        <input type="password" id="password" placeholder="Enter password">
+        <button class="btn btn-primary validate" onclick="validate();">confirm</button>
         <input type="hidden" class="token" th:name="${_csrf.parameterName}"
                th:value="${_csrf.token}"
         >
