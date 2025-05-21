@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "img")
 public class Img {
     @Id
     @Column(name = "img_id")
