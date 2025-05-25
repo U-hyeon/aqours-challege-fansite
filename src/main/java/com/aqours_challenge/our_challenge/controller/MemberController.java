@@ -58,7 +58,12 @@ public class MemberController {
 
     @RequestMapping(value = "/login", method = {RequestMethod.GET, RequestMethod.POST})
     public String loginForm(Model model) {
-        model.addAttribute("memberFormDto", new MemberFormDto());
+        return "member/loginForm";
+    }
+
+    @GetMapping("/login/error")
+    public String loginError(Model model) {
+        model.addAttribute("loginErrorMsg", "* Please check your ID and Password");
         return "member/loginForm";
     }
 
