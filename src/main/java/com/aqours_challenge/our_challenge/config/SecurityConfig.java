@@ -21,9 +21,6 @@ public class SecurityConfig {
     @Bean
     protected SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf
-                    .ignoringRequestMatchers("/members/login") // 이 URL 패턴은 CSRF 무시
-                )
                 .authorizeHttpRequests((auth) -> auth
                     .requestMatchers("/","/error","/css/**", "/members/**", "/gallery").permitAll()
                     .requestMatchers("/img/**","/images/**").permitAll()
@@ -35,6 +32,7 @@ public class SecurityConfig {
                 )
                 .formLogin((formLogin) -> formLogin
                     .loginPage("/members/login")
+                    .permitAll()
                     .defaultSuccessUrl("/")
                     .usernameParameter("email")
                     .failureUrl("/members/login/error")
