@@ -57,7 +57,7 @@
         },
         success: function (data, status, xhr) {
           console.log(data);
-          modalImg.src = `/images/${data.image.imgFileName}`;
+          modalImg.src = `/images/gallery/${data.image.imgFileName}`;
           return;
         },
         error: function(data, status, err) {
@@ -89,11 +89,11 @@
   <div class="image-area">
     <th:block th:each="imgContent, count: ${images}">
       <a href="javascript:void(0);"
-         th:attr="data-img='/images/' + ${imgContent.getImgFileName()}"
+         th:attr="data-img='/images/gallery/' + ${imgContent.getImgFileName()}"
          onclick="openModal(this)"
          th:id="${imgContent.getImgId()}"
       >
-        <img th:src="@{'/images/' + ${imgContent.getImgFileName()}}" style="width:200px; height:auto; object-fit: contain">
+        <img th:src="@{'/images/gallery/' + ${imgContent.getImgFileName()}}" style="width:200px; height:auto; object-fit: contain">
       </a>
       <div class="w-100" th:if="${count.index%3 == 2}"></div>
     </th:block>
