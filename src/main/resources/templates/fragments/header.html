@@ -18,7 +18,7 @@
             </a>
           </li>
           <li>
-            <a class="news" href="/info/notice">
+            <a class="news" href="https://x.com/aqours_fan_rp">
               <span class="jp">情報</span>
               <span class="en">NEWS</span>
             </a>
@@ -36,9 +36,9 @@
             </a>
           </li>
           <li>
-            <a class="help" href="/help">
-              <span class="jp">たすけて</span>
-              <span class="en">HELP</span>
+            <a class="help" href="https://docs.google.com/forms/d/e/1FAIpQLSc6iLyae1yYeaAXoTkC4sirnR5cL3HkQn6AaUYT-L22ZZoZXw/viewform?usp=header">
+              <span class="jp">サポート</span>
+              <span class="en">SUPPORT</span>
             </a>
           </li>
 <!--          <li sec:authorize="hasAnyAuthority('ROLE_ADMIN')"> &lt;!&ndash; 관리자 권한 &ndash;&gt;-->
@@ -97,6 +97,8 @@
         document.querySelector(".main-nav .gallery").closest("li").className = 'active';
       } else if (location.href.includes('/admin')) {
         document.querySelector(".main-nav .admin").closest("li").className = 'active';
+      } else if (location.href.includes('/members')) {
+        // no active tab
       } else {
         document.querySelector(".main-nav .top").closest("li").className = 'active';
       }
