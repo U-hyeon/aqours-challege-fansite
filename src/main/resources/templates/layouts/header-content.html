@@ -21,12 +21,15 @@
   <th:block layout:fragment="script"></th:block>
   <th:block layout:fragment="css"></th:block>
 </head>
-<header>
-  <div th:replace="~{fragments/header::header}"></div>
-</header>
+
 <body>
-  <div id="container">
-    <div layout:fragment="content" class="content">
+  <div id="wrapper">
+    <header>
+      <div th:replace="~{fragments/header::header}"></div>
+    </header>
+    <div id="container">
+      <div layout:fragment="content" class="content">
+      </div>
     </div>
   </div>
 </body>
