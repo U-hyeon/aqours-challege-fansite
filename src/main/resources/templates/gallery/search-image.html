@@ -105,7 +105,7 @@
   <div class="pagination">
     <ul style="list-style:none; display:flex; gap:5px; justify-content:center; padding:0;">
       <li th:if="${images.hasPrevious()}">
-        <a th:href="@{|/gallery?page=${images.number - 1}|}">이전</a>
+        <a th:href="@{|/gallery?page=${images.number - 1}|}">prev</a>
       </li>
 
       <li th:each="i : ${#numbers.sequence(0, images.totalPages - 1)}"
@@ -115,7 +115,7 @@
       </li>
 
       <li th:if="${images.hasNext()}">
-        <a th:href="@{|/gallery?page=${images.number + 1}|}">다음</a>
+        <a th:href="@{|/gallery?page=${images.number + 1}|}">next</a>
       </li>
     </ul>
   </div>

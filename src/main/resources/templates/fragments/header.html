@@ -23,16 +23,22 @@
               <span class="en">NEWS</span>
             </a>
           </li>
+<!--          <li>-->
+<!--            <a class="post" href="/posts/search">-->
+<!--              <span class="jp">コメント</span>-->
+<!--              <span class="en">POSTS</span>-->
+<!--            </a>-->
+<!--          </li>-->
           <li>
-            <a class="post" href="/posts/search">
-              <span class="jp">コメント</span>
-              <span class="en">POSTS</span>
+            <a class="gallery" href="/gallery">
+              <span class="jp">写真館</span>
+              <span class="en">GALLERY</span>
             </a>
           </li>
           <li>
-            <a class="gallery" href="/gallery">
-              <span class="jp">ギャラリー</span>
-              <span class="en">GALLERY</span>
+            <a class="gallery" href="/">
+              <span class="jp">海辺</span>
+              <span class="en">BEACH</span>
             </a>
           </li>
           <li>
@@ -89,12 +95,14 @@
     document.addEventListener("DOMContentLoaded", function() {
       if (location.href.includes('/notice')) {
         document.querySelector(".main-nav .news").closest("li").className = 'active';
-      } else if (location.href.includes('/posts')) {
-        document.querySelector(".main-nav .post").closest("li").className = 'active';
+      // } else if (location.href.includes('/posts')) {
+      //   document.querySelector(".main-nav .post").closest("li").className = 'active';
       } else if (location.href.includes('/help')) {
         document.querySelector(".main-nav .help").closest("li").className = 'active';
       } else if (location.href.includes('/gallery')) {
         document.querySelector(".main-nav .gallery").closest("li").className = 'active';
+      } else if (location.href.includes('/')) {
+        document.querySelector(".main-nav .post").closest("li").className = 'active';
       } else if (location.href.includes('/admin')) {
         document.querySelector(".main-nav .admin").closest("li").className = 'active';
       } else if (location.href.includes('/members')) {
