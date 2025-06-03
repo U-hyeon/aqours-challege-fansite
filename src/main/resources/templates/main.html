@@ -2,12 +2,78 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/header-content}"
+      layout:decorate="~{layouts/header-content-main}"
 >
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+
+<th:block layout:fragment="css">
+    <style>
+        .main-banner{
+            width: 100%;
+            height: 780px;
+        }
+        .main-banner img {
+            height: 100%;
+        }
+        .title-banner{
+            position: absolute;
+            width: 100%;
+            height: 780px;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.8);
+            animation: dim-fadeout 1s 3.5s ease forwards;
+        }
+        .title-box{
+            position: relative;
+            height: 550px;
+            width: 999px;
+            top: 100px;
+            left: 80px;
+            background: #FFFFFF;
+            border: #FFBA00 10px solid;
+            border-radius: 5%;
+            opacity: 100%;
+            animation: fadeout 1s 3s forwards;
+        }
+        .sub-title{
+            position: relative;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            color: #18b6ff;
+            text-align: center;
+            font-size: 65pt;
+            text-shadow: -2px 0 #FFFFFF, 0 2px #FFFFFF, 2px 0 #FFFFFF, 0 -2px #FFFFFF,
+                        -4px 0 #18b6ff, 0 4px #18b6ff, 4px 0 #18b6ff, 0 -4px #18b6ff;
+            opacity: 100%;
+            animation: fadeout 0.5s 2.5s ease forwards;
+        }
+        @keyframes dim-fadeout {
+            from {
+                background: rgba(0, 0, 0, 0.8);
+            }
+            to {
+                background: rgba(0, 0, 0, 0);
+            }
+            to {
+                display: none;
+            }
+        }
+        @keyframes fadeout {
+            from {
+                opacity: 100%;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+    </style>
+</th:block>
+
 <body>
 <div layout:fragment="content">
     <div class="content-wrapper">
