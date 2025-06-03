@@ -16,58 +16,58 @@ public class MemberFormDto {
     /**
      * 회원명
      */
-    @NotBlank(message = "닉네임은 필수 입력 값입니다.")
+    @NotBlank(message = "Username must be filled.")
     private String memberName;
 
     /**
      * 이메일
      */
-    @NotBlank(message = "이메일은 필수 입력 값입니다.")
-    @Email(message="이메일 형식으로 입력해주세요.")
+    @NotBlank(message = "E-mail must be filled.")
+    @Email(message="Please use an E-mail.")
     private String email;
 
     /**
      * 비밀번호
      */
-    @NotBlank(message = "비밀번호는 필수 입력 값입니다.")
-    @Length(min=8, max=16, message="비밀번호는 8~16자 이어야 합니다.")
+    @NotBlank(message = "Password must be filled.")
+    @Length(min=8, max=16, message="Please use password in 8~16 characters.")
     private String password;
 
     /**
      * 주소
      */
-    @NotBlank(message = "트위터 아이디는 필수 입력 값입니다.")
+    @NotBlank(message = "Twitter id must be filled.")
     private String twitterId;
 
-    public @NotBlank(message = "닉네임은 필수 입력 값입니다.") String getMemberName() {
+    public @NotBlank(message = "Username must be filled.") String getMemberName() {
         return memberName;
     }
 
-    public void setMemberName(@NotBlank(message = "닉네임은 필수 입력 값입니다.") String memberName) {
+    public void setMemberName(@NotBlank(message = "Username must be filled.") String memberName) {
         this.memberName = memberName;
     }
 
-    public @NotBlank(message = "이메일은 필수 입력 값입니다.") @Email(message = "이메일 형식으로 입력해주세요.") String getEmail() {
+    public @NotBlank(message = "E-mail must be filled.") @Email(message = "Please use an E-mail.") String getEmail() {
         return email;
     }
 
-    public void setEmail(@NotBlank(message = "이메일은 필수 입력 값입니다.") @Email(message = "이메일 형식으로 입력해주세요.") String email) {
+    public void setEmail(@NotBlank(message = "E-mail must be filled.") @Email(message = "Please use an E-mail.") String email) {
         this.email = email;
     }
 
-    public @NotBlank(message = "비밀번호는 필수 입력 값입니다.") @Length(min = 8, max = 16, message = "비밀번호는 8~16자 이어야 합니다.") String getPassword() {
+    public @NotBlank(message = "Password must be filled.") @Length(min = 8, max = 16, message = "Please use password in 8~16 characters.") String getPassword() {
         return password;
     }
 
-    public void setPassword(@NotBlank(message = "비밀번호는 필수 입력 값입니다.") @Length(min = 8, max = 16, message = "비밀번호는 8~16자 이어야 합니다.") String password) {
+    public void setPassword(@NotBlank(message = "Password must be filled.") @Length(min = 8, max = 16, message = "Please use password in 8~16 characters.") String password) {
         this.password = password;
     }
 
-    public @NotBlank(message = "트위터 아이디는 필수 입력 값입니다.") String getTwitterId() {
+    public @NotBlank(message = "Twitter id must be filled.") String getTwitterId() {
         return twitterId;
     }
 
-    public void setTwitterId(@NotBlank(message = "트위터 아이디는 필수 입력 값입니다.") String twitterId) {
+    public void setTwitterId(@NotBlank(message = "Twitter id must be filled.") String twitterId) {
         this.twitterId = twitterId;
     }
 }
