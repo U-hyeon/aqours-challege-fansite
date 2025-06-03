@@ -61,14 +61,16 @@
 <body>
     <div layout:fragment="content">
         <div class="title">CONFIRMATION</div>
-        <div><b>ID</b><span style="color: #777777;">(email)</span></div>
-        <div id="email" th:text="${currentUserEmail}"></div>
-        <div><b>Password</b></div>
-        <input type="password" id="password" placeholder="Enter password">
-        <button class="btn btn-primary validate" onclick="validate();">confirm</button>
-        <input type="hidden" class="token" th:name="${_csrf.parameterName}"
-               th:value="${_csrf.token}"
-        >
+        <div class="content-wrapper">
+            <div><b>ID</b><span style="color: #777777;">(email)</span></div>
+            <div id="email" th:text="${currentUserEmail}"></div>
+            <div><b>Password</b></div>
+            <input type="password" id="password" placeholder="Enter password">
+            <button class="btn btn-primary validate" onclick="validate();">confirm</button>
+            <input type="hidden" class="token" th:name="${_csrf.parameterName}"
+                   th:value="${_csrf.token}"
+            >
+        </div>
     </div>
 </body>
 </html>

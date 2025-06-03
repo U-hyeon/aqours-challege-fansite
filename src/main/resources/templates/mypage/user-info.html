@@ -24,38 +24,40 @@
 
 <div layout:fragment="content">
   <div class="title">MY PAGE</div>
-  <div class="info">
-    <div><b>EMAIL</b></div>
-    <div id="email" th:text="${userInfo.getEmail()}"></div>
+  <div class="content-wrapper">
+    <div class="info">
+      <div><b>EMAIL</b></div>
+      <div id="email" th:text="${userInfo.getEmail()}"></div>
 
-    <div><b style="color: #ff3333;">PASSWORD</b></div>
-    <input type="password" id="password" placeholder="Enter password">
+      <div><b style="color: #ff3333;">PASSWORD</b></div>
+      <input type="password" id="password" placeholder="Enter password">
 
-    <div><b>Username</b></div>
-    <input type="text" maxlength="10" id="memberName">
+      <div><b>Username</b></div>
+      <input type="text" maxlength="10" id="memberName">
 
-    <div><b>X</b> <span style="color: #777777">(twitter)</span></div>
-    <input type="text" id="twitterId">
+      <div><b>X</b> <span style="color: #777777">(twitter)</span></div>
+      <input type="text" id="twitterId">
 
-    <div><b>Gender</b></div>
-    <input type="radio" name="gender" id="male" value="M">
-    <label for="male">男 (Male)</label>
-    <input type="radio" name="gender" id="female" value="F">
-    <label for="female">女 (Female)</label>
+      <div><b>Gender</b></div>
+      <input type="radio" name="gender" id="male" value="M">
+      <label for="male">男 (Male)</label>
+      <input type="radio" name="gender" id="female" value="F">
+      <label for="female">女 (Female)</label>
 
-    <div><b>Birth Year</b></div>
-    <input type="number" maxlength="4" id="birthYear">
+      <div><b>Birth Year</b></div>
+      <input type="number" maxlength="4" id="birthYear">
 
-    <div><b>Country</b></div>
-    <input type="text" maxlength="2" id="countryCode">
+      <div><b>Country</b></div>
+      <input type="text" maxlength="2" id="countryCode">
+    </div>
+
+    <div class="action-area">
+      <button id="validate" class="btn btn-primary">confirm</button>
+    </div>
+    <input type="hidden" class="token" th:name="${_csrf.parameterName}"
+           th:value="${_csrf.token}"
+    >
   </div>
-
-  <div class="action-area">
-    <button id="validate" class="btn btn-primary">confirm</button>
-  </div>
-  <input type="hidden" class="token" th:name="${_csrf.parameterName}"
-         th:value="${_csrf.token}"
-  >
 
   <script>
     function validate() {
