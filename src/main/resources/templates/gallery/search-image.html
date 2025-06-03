@@ -11,6 +11,10 @@
 <!-- 사용자 css 추가 -->
 <th:block layout:fragment="css">
   <style>
+    #wrapper {
+      background-image: url("/img/gallery_wall.png");
+      background-size: 500px;
+    }
     .modal {
       background-color:rgba(0,0,0,0.5);
       display: flex;
@@ -82,74 +86,77 @@
     });
   </script>
 </th:block>
+
 <div layout:fragment="content">
   <div class="title">
     ギャラリー
   </div>
-  <div class="image-area">
-    <th:block th:each="imgContent, count: ${images}">
-      <a href="javascript:void(0);"
-         th:attr="data-img='/images/gallery/' + ${imgContent.getImgFileName()}"
-         onclick="openModal(this)"
-         th:id="${imgContent.getImgId()}"
-      >
-        <img th:src="@{'/images/gallery/' + ${imgContent.getImgFileName()}}" style="width:200px; height:auto; object-fit: contain">
-      </a>
-      <div class="w-100" th:if="${count.index%3 == 2}"></div>
-    </th:block>
-  </div>
-  <div class="action-area">
-    <button onclick="location.href='/gallery/new';">NEW</button>
-  </div>
-  <!-- 페이지 네비게이션 -->
-  <div class="pagination">
-    <ul style="list-style:none; display:flex; gap:5px; justify-content:center; padding:0;">
-      <li th:if="${images.hasPrevious()}">
-        <a th:href="@{|/gallery?page=${images.number - 1}|}">이전</a>
-      </li>
+  <div class="content-wrapper">
+    <div class="image-area">
+      <th:block th:each="imgContent, count: ${images}">
+        <a href="javascript:void(0);"
+           th:attr="data-img='/images/gallery/' + ${imgContent.getImgFileName()}"
+           onclick="openModal(this)"
+           th:id="${imgContent.getImgId()}"
+        >
+          <img th:src="@{'/images/gallery/' + ${imgContent.getImgFileName()}}" style="width:200px; height:auto; object-fit: contain">
+        </a>
+        <div class="w-100" th:if="${count.index%3 == 2}"></div>
+      </th:block>
+    </div>
+    <div class="action-area">
+      <button onclick="location.href='/gallery/new';">NEW</button>
+    </div>
+    <!-- 페이지 네비게이션 -->
+    <div class="pagination">
+      <ul style="list-style:none; display:flex; gap:5px; justify-content:center; padding:0;">
+        <li th:if="${images.hasPrevious()}">
+          <a th:href="@{|/gallery?page=${images.number - 1}|}">prev</a>
+        </li>
 
-      <li th:each="i : ${#numbers.sequence(0, images.totalPages - 1)}"
-          th:classappend="${images.number == i} ? 'active'">
-        <a th:href="@{|/gallery?page=${i}|}"
-           th:text="${i + 1}"></a>
-      </li>
+        <li th:each="i : ${#numbers.sequence(0, images.totalPages - 1)}"
+            th:classappend="${images.number == i} ? 'active'">
+          <a th:href="@{|/gallery?page=${i}|}"
+             th:text="${i + 1}"></a>
+        </li>
 
-      <li th:if="${images.hasNext()}">
-        <a th:href="@{|/gallery?page=${images.number + 1}|}">다음</a>
-      </li>
-    </ul>
-  </div>
+        <li th:if="${images.hasNext()}">
+          <a th:href="@{|/gallery?page=${images.number + 1}|}">next</a>
+        </li>
+      </ul>
+    </div>
 
-  <!-- 모달 영역 -->
-  <div id="imageModal" class="modal" style="display:none;">
-    <table id="imageModal-wrapper">
-      <colgroup>
-        <col style="width:25px">
-        <col style="width:800px">
-        <col style="width:25px">
-      </colgroup>
-      <tbody>
-        <tr style="height:25px;">
-          <th></th>
-          <th></th>
-          <th class="close" onclick="closeModal()">
-            <img src="/img/close_btn.png">
-          </th><!--close button-->
-        </tr>
-        <tr style="height:600px;">
-          <th></th>
-          <th class="imageModal-frame">
-            <img class="modal-content" id="modalImage">
-          </th>
-          <th></th>
-        </tr>
-        <tr style="height:5px"></tr>
-        <tr style="height:40px;">
-          <th></th>
-          <th>text</th>
-          <th></th>
-        </tr>
-      </tbody>
-    </table>
+    <!-- 모달 영역 -->
+    <div id="imageModal" class="modal" style="display:none;">
+      <table id="imageModal-wrapper">
+        <colgroup>
+          <col style="width:25px">
+          <col style="width:800px">
+          <col style="width:25px">
+        </colgroup>
+        <tbody>
+          <tr style="height:25px;">
+            <th></th>
+            <th></th>
+            <th class="close" onclick="closeModal()">
+              <img src="/img/close_btn.png">
+            </th><!--close button-->
+          </tr>
+          <tr style="height:600px;">
+            <th></th>
+            <th class="imageModal-frame">
+              <img class="modal-content" id="modalImage">
+            </th>
+            <th></th>
+          </tr>
+          <tr style="height:5px"></tr>
+          <tr style="height:40px;">
+            <th></th>
+            <th>text</th>
+            <th></th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
