@@ -358,28 +358,34 @@
     }
 
     function startResize(e) {
-      e.stopPropagation();
-      initialTransform = {
-        fontSize: parseFloat(selectedBox.style.fontSize),
-        scale: parseFloat(selectedBox.getAttribute("data-scale"))
-      };
-      initialMouse = { x: e.clientX, y: e.clientY };
+        const boxRect = selectedBox.getBoundingClientRect();
+        const centerX = boxRect.left + boxRect.width / 2;
+        const centerY = boxRect.top + boxRect.height / 2;
 
-      document.addEventListener("mousemove", resize);
-      document.addEventListener("mouseup", stopResize);
+        initialTransform = {
+            scale: parseFloat(selectedBox.getAttribute("data-scale")) || 1,
+            fontSize: parseFloat(window.getComputedStyle(selectedBox).fontSize),
+            distance: Math.hypot(e.clientX - centerX, e.clientY - centerY)
+        };
+
+        document.addEventListener("mousemove", resize);
+        document.addEventListener("mouseup", stopResize);
     }
 
     function resize(e) {
-      const dx = e.clientX - initialMouse.x;
-      const dy = e.clientY - initialMouse.y;
-      const delta = Math.max(dx, dy);
-      const newScale = Math.max(0.2, initialTransform.scale + delta / 200);
+        const boxRect = selectedBox.getBoundingClientRect();
+        const centerX = boxRect.left + boxRect.width / 2;
+        const centerY = boxRect.top + boxRect.height / 2;
 
-      selectedBox.setAttribute("data-scale", newScale);
-      const angle = selectedBox.getAttribute("data-rotation");
-      const correctAngle = angle + 90
-      selectedBox.style.transform = `scale(${newScale}) rotate(${correctAngle}deg)`;
-      selectedBox.style.fontSize = (initialTransform.fontSize * newScale).toFixed(2) + "px";
+        const currentDistance = Math.hypot(e.clientX - centerX, e.clientY - centerY);
+        const scaleRatio = currentDistance / initialTransform.distance;
+        const newScale = Math.max(0.2, initialTransform.scale * scaleRatio);
+
+        selectedBox.setAttribute("data-scale", newScale);
+
+        const angle = parseFloat(selectedBox.getAttribute("data-rotation") || 0);
+        selectedBox.style.transform = `scale(${newScale}) rotate(${angle}deg)`;
+        selectedBox.style.fontSize = (initialTransform.fontSize * newScale).toFixed(2) + "px";
     }
 
     function stopResize() {
