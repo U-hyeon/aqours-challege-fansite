@@ -293,6 +293,7 @@
               .then(response => response.json())
               .then(result => {
                   renderCurrentPosts(result)
+                  addTextBox();
               })
               .catch(e => {
                   console.log("error: " + e);
@@ -342,16 +343,8 @@
     let selectedBox = null;
     let isDragging = false;
     let offsetX = 0, offsetY = 0;
-    let rotating = false;
-    let initialMouse = {}, initialTransform = {};
-
-    // 배경 이미지 드래그 기능
-    let isDraggingBackground = false;
-    let startX, startY;
 
     const preview = document.getElementById("preview-container");
-
-    document.addEventListener("DOMContentLoaded", addTextBox);
 
     function addTextBox() {
       const box = document.createElement("div");
