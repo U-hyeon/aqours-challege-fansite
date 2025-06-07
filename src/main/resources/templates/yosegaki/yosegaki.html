@@ -200,7 +200,7 @@
       </textarea>
     </div>
     <div style="text-align: right;">
-      <button>submit</button>
+      <button onclick="save()">submit</button>
     </div>
     <div>
       <input type="range" id="fontSize" style="display:none; width: 50px" min="1" max="30" oninput="updateSelectedTextBox()" />
@@ -212,21 +212,60 @@
   >
 
   <button onclick="printRotateValue()">New</button>
+
+
   <script>
+      /**
+       * 칠판 텍스트저장 - 카테고리: C001
+       */
+      function save() {
+          const textbox = document.querySelector('.text-box');
+          const contentsToSave = getContentsToSave(textbox, 'C001');
 
+          saveRpPost(contentsToSave);
+      }
 
-    function saveRpPost(rpPost) {
-      fetch("/rp-post/new", {
-        method: "post",
-        body: rpPost,
-      })
+      /**
+       * 텍스트 내용, 좌표, 회전각, 확대비율 반환
+       */
+      function getContentsToSave(textbox, category) {
+          const textBoxTransform = textbox.style.transform;
+          const scale = parseFloat( textBoxTransform.match(/scale\(([^)]+)\)/)[1] );
+          const rotation = parseFloat( textBoxTransform.match(/rotate\(([^)]+)deg\)/)[1] );
+          const positionX = parseFloat( textbox.style.left );
+          const positionY = parseFloat( textbox.style.top );
+
+          return JSON.stringify({
+              category: category,
+              text: textbox.innerText,
+              textAlign: textbox.style.textAlign,
+              scale: scale,
+              positionX: positionX,
+              positionY: positionY,
+              rotationZ: rotation,
+              userEmail: "",
+          });
+      }
+
+      function saveRpPost(rpPost) {
+          const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+          const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+          fetch("api/yosegaki/new", {
+              method: "post",
+              headers: {
+                  "Content-Type": "application/json",
+                  [csrfHeader]: csrfToken,
+              },
+              body: rpPost,
+          })
               .then(response => {
-                console.log(response)
+                  console.log(response)
               })
               .catch(e => {
-                console.log("error: " + e)
+                  console.log("error: " + e)
               })
-    }
+      }
   </script>
   <script>
     let selectedBox = null;
