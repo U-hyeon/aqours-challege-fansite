@@ -239,6 +239,7 @@
               category: category,
               text: textbox.innerText,
               textAlign: textbox.style.textAlign,
+              textColor: textbox.style.color,
               scale: scale,
               positionX: positionX,
               positionY: positionY,
@@ -246,6 +247,9 @@
           });
       }
 
+      /**
+       * 저장 api 요청
+       */
       function saveRpPost(rpPost) {
           const csrfToken = document.querySelector('meta[name="_csrf"]').content;
           const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
@@ -259,10 +263,15 @@
               body: rpPost,
           })
               .then(response => {
-                  console.log(response)
+                  if (response.ok) {
+                      alert("Upload completed!");
+                      location.replace("/");
+                  } else {
+                      alert("Sorry, there was an error.");
+                  }
               })
               .catch(e => {
-                  console.log("error: " + e)
+                  console.log("error: " + e);
               })
       }
   </script>

@@ -19,6 +19,10 @@ public class RpPostSaveRequest {
      */
     private String textAlign;
     /**
+     * 텍스트 컬러 ( rgb(255, 255, 255) )
+     */
+    private String textColor;
+    /**
      * 텍스트 크기
      */
     private BigDecimal scale;
@@ -49,6 +53,10 @@ public class RpPostSaveRequest {
 
     public String getTextAlign() {
         return textAlign;
+    }
+
+    public String getTextColor() {
+        return textColor;
     }
 
     public BigDecimal getScale() {

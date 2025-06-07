@@ -37,33 +37,38 @@ public class RpPost {
     /**
      * 텍스트 정렬
      */
-    @Column(name = "text_align", length = 6)
+    @Column(name = "text_align", length = 6, nullable = false)
     private String textAlign;
+    /**
+     *
+     */
+    @Column(name = "text_color", length = 30, nullable = false)
+    private String textColor;
     /**
      * 텍스트 크기
      */
-    @Column(name = "scale", precision = 10, scale = 5)
+    @Column(name = "scale", precision = 10, scale = 5, nullable = false)
     private BigDecimal scale;
     /**
      * 텍스트 위치 X
      */
-    @Column(name = "position_x", precision = 10, scale = 4)
+    @Column(name = "position_x", precision = 10, scale = 4, nullable = false)
     private BigDecimal positionX;
     /**
      * 텍스트 위치 Y
      */
-    @Column(name = "position_y", precision = 10, scale = 4)
+    @Column(name = "position_y", precision = 10, scale = 4, nullable = false)
     private BigDecimal positionY;
     /**
      * 텍스트 회전 Z축
      */
-    @Column(name = "rotation_z", precision = 10, scale = 4)
+    @Column(name = "rotation_z", precision = 10, scale = 4, nullable = false)
     private BigDecimal rotationZ;
 
     /**
      * 작성자
      */
-    @Column(name = "reg_user")
+    @Column(name = "reg_user", nullable = false)
     @JoinColumn(name = "member_id")
     private Long regUser;
     /**
@@ -74,7 +79,7 @@ public class RpPost {
     /**
      * 수정자
      */
-    @Column(name = "modify_user")
+    @Column(name = "modify_user", nullable = false)
     @JoinColumn(name = "member_id")
     private Long modifyUser;
     /**
@@ -118,6 +123,14 @@ public class RpPost {
 
     public void setTextAlign(String textAlign) {
         this.textAlign = textAlign;
+    }
+
+    public String getTextColor() {
+        return textColor;
+    }
+
+    public void setTextColor(String textColor) {
+        this.textColor = textColor;
     }
 
     public BigDecimal getScale() {

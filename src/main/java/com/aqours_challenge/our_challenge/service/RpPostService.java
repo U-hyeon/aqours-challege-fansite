@@ -30,6 +30,7 @@ public class RpPostService {
         rpPost.setCategory(rpPostSaveRequest.getCategory());
         rpPost.setTextContent(rpPostSaveRequest.getText());
         rpPost.setTextAlign(rpPostSaveRequest.getTextAlign());
+        rpPost.setTextColor(rpPostSaveRequest.getTextColor());
         rpPost.setScale(BigDecimal.valueOf(rpPostSaveRequest.getScale().doubleValue()));
         rpPost.setPositionX(BigDecimal.valueOf(rpPostSaveRequest.getPositionX().doubleValue()));
         rpPost.setPositionY(BigDecimal.valueOf(rpPostSaveRequest.getPositionY().doubleValue()));
