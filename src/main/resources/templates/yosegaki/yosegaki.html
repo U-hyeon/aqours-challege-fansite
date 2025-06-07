@@ -355,13 +355,11 @@
       selectedBox.innerText = document.getElementById("textContent").value;
       selectedBox.style.fontSize = document.getElementById("fontSize").value + "px";
       selectedBox.style.color = document.getElementById("fontColor").value;
-      // selectedBox.style.fontFamily = document.getElementById("fontFamily").value;
 
-      const angle = getRotateValue(selectedBox);
-      const correctAngle = angle + 90;
-      const scale = selectedBox.getAttribute("data-scale");
-      selectedBox.setAttribute("data-rotation", correctAngle);
-      selectedBox.style.transform = `scale(${scale}) rotate(${correctAngle}deg)`;
+      const angle = parseFloat(selectedBox.getAttribute("data-rotation") || "0");
+      const scale = parseFloat(selectedBox.getAttribute("data-scale") || "1");
+      selectedBox.setAttribute("data-rotation", angle);
+      selectedBox.setAttribute("data-scale", scale);
     }
 
     function toggleStyle(style) {
