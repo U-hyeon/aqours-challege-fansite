@@ -30,17 +30,23 @@
 <!--            </a>-->
 <!--          </li>-->
           <li>
+            <a class="yosegaki" href="/yosegaki">
+              <span class="jp">教室</span>
+              <span class="en">CLASSROOM</span>
+            </a>
+          </li>
+          <li>
             <a class="gallery" href="/gallery">
               <span class="jp">写真館</span>
               <span class="en">GALLERY</span>
             </a>
           </li>
-          <li>
-            <a class="gallery" href="/">
-              <span class="jp">海辺</span>
-              <span class="en">BEACH</span>
-            </a>
-          </li>
+<!--          <li>-->
+<!--            <a class="gallery" href="/">-->
+<!--              <span class="jp">海辺</span>-->
+<!--              <span class="en">BEACH</span>-->
+<!--            </a>-->
+<!--          </li>-->
           <li>
             <a class="help" href="https://docs.google.com/forms/d/e/1FAIpQLSc6iLyae1yYeaAXoTkC4sirnR5cL3HkQn6AaUYT-L22ZZoZXw/viewform?usp=header">
               <span class="jp">サポート</span>
@@ -99,6 +105,8 @@
       //   document.querySelector(".main-nav .post").closest("li").className = 'active';
       } else if (location.href.includes('/help')) {
         document.querySelector(".main-nav .help").closest("li").className = 'active';
+      } else if (location.href.includes('/yosegaki')) {
+        document.querySelector(".main-nav .yosegaki").closest("li").className = 'active';
       } else if (location.href.includes('/gallery')) {
         document.querySelector(".main-nav .gallery").closest("li").className = 'active';
       } else if (location.href.includes('/')) {

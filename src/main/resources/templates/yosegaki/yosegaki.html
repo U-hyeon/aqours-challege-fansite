@@ -212,6 +212,9 @@
   >
 
   <script>
+      // 페이지 로드 후 저장된 rppost 및 제출을 위한 텍스트박스 렌더링
+      document.addEventListener('DOMContentLoaded', getPostListAndRender);
+
       /**
        * 칠판 텍스트저장 - 카테고리: C001
        */
@@ -237,6 +240,7 @@
               text: textbox.innerText,
               textAlign: textbox.style.textAlign,
               textColor: textbox.style.color,
+              textSize: parseFloat(textbox.style.fontSize),
               scale: scale,
               positionX: positionX,
               positionY: positionY,
@@ -262,7 +266,7 @@
               .then(response => {
                   if (response.ok) {
                       alert("Upload completed!");
-                      location.replace("/");
+                      location.replace("/yosegaki");
                   } else {
                       alert("Sorry, there was an error.");
                   }
@@ -271,21 +275,77 @@
                   console.log("error: " + e);
               })
       }
+
+      /**
+       * db에 저장된 rp-post 목록을 불러와 렌더
+       */
+      function getPostListAndRender() {
+          const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+          const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+          fetch("/api/yosegaki/from-category", {
+              method: "post",
+              headers: {
+                  "Content-Type": "application/json",
+                  [csrfHeader]: csrfToken,
+              },
+              body: "C001",
+          })
+              .then(response => response.json())
+              .then(result => {
+                  renderCurrentPosts(result)
+                  addTextBox();
+              })
+              .catch(e => {
+                  console.log("error: " + e);
+              })
+      }
+
+      /**
+       * 리스트 정보를 이용하여 텍스트박스 렌더링
+       */
+      function renderCurrentPosts(postList) {
+          for (const post of postList) {
+              renderTextBox(post);
+          }
+      }
+
+      /**
+       * 텍스트박스 렌더링
+       */
+      function renderTextBox(post) {
+          const previewContainer = document.createElement("div");
+
+          previewContainer.className = "text-box";
+          previewContainer.innerText = post.textContent;
+          previewContainer.style.left = `${post.positionX}px`;
+          previewContainer.style.top = `${post.positionY}px`;
+          previewContainer.style.whiteSpace = "nowrap";
+          previewContainer.style.textAlign = post.textAlign;
+          previewContainer.style.fontSize = `${post.textSize}px`;
+          previewContainer.style.color = post.textColor;
+          previewContainer.style.textShadow = `
+            1px 1px 3px ${post.textColor},
+            -1px -1px 3px ${post.textColor},
+            1px -1px 3px ${post.textColor},
+            -1px 1px 3px ${post.textColor}
+          `;
+          previewContainer.style.transform = `scale(${post.scale}) rotate(${post.rotationZ}deg)`;
+          previewContainer.setAttribute("data-rotation", post.rotationZ);
+          previewContainer.setAttribute("data-scale", post.scale);
+          previewContainer.setAttribute("data-bold", "false");
+          previewContainer.setAttribute("data-italic", "false");
+          previewContainer.setAttribute("data-underline", "false");
+
+          preview.appendChild(previewContainer);
+      }
   </script>
   <script>
     let selectedBox = null;
     let isDragging = false;
     let offsetX = 0, offsetY = 0;
-    let rotating = false;
-    let initialMouse = {}, initialTransform = {};
-
-    // 배경 이미지 드래그 기능
-    let isDraggingBackground = false;
-    let startX, startY;
 
     const preview = document.getElementById("preview-container");
-
-    document.addEventListener("DOMContentLoaded", addTextBox);
 
     function addTextBox() {
       const box = document.createElement("div");
@@ -455,6 +515,9 @@
       };
     }
 
+    /**
+     * rgb 색상코드(style 요소)를 hex 색상코드(input 요소)로 변환
+     */
     function rgbToHex(rgb) {
       const res = rgb.match(/\d+/g);
       if (!res) return "#ffffff";
@@ -476,7 +539,7 @@
     }
 
     /**
-     * 텍스트 왼쪽 정렬
+     * 텍스트 왼쪽 정렬버튼 동작
      */
     function alignLeft() {
         document.querySelector('.align-button.align-left').classList.add('on');
@@ -484,8 +547,9 @@
         document.querySelector('.align-button.align-right').classList.remove('on');
         alignText('left');
     }
+
     /**
-     * 텍스트 가운데 정렬
+     * 텍스트 가운데 정렬버튼 동작
      */
     function toggleAlignCenter() {
         if (document.querySelector('.align-button.align-center').classList.contains('on')) {
@@ -498,8 +562,9 @@
         document.querySelector('.align-button.align-right').classList.remove('on');
         alignText('center');
     }
+
     /**
-     * 텍스트 오른쪽 정렬
+     * 텍스트 오른쪽 정렬버튼 동작
      */
     function toggleAlignRight() {
         if (document.querySelector('.align-button.align-right').classList.contains('on')) {
@@ -518,22 +583,6 @@
      */
     function alignText(alignment){
       selectedBox.style.textAlign = alignment;
-    }
-
-    function printRotateValue() {
-      console.log(getRotateValue(selectedBox));
-    }
-
-    /**
-     * 텍스트박스 회전각 반환
-     */
-    function getRotateValue(element) {
-      const transform = element.style.transform;
-      const match = transform.match(/rotate\(([-\d.]+)deg\)/);
-      if (match) {
-        return match[1]; // 문자열 그대로 반환
-      }
-      return 0; // rotate가 없으면 0
     }
   </script>
 </div>

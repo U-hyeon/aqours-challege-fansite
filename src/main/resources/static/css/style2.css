@@ -110,6 +110,8 @@ header .menu ul.main-nav li.active a.post {
     background-color: #ff3333; }
 header .menu ul.main-nav li.active a.help {
     background-color: #ff99cc; }
+header .menu ul.main-nav li.active a.yosegaki {
+    background-color: #245441; }
 header .menu ul.main-nav li.active a.gallery {
     background-color: #b545da; }
 header .menu ul.main-nav li.active a.blog {
@@ -142,6 +144,8 @@ header .menu ul.main-nav li a:hover.post {
     background-color: #ff3333; }
 header .menu ul.main-nav li a:hover.help {
     background-color: #ff99cc; }
+header .menu ul.main-nav li a:hover.yosegaki {
+    background-color: #245441; }
 header .menu ul.main-nav li a:hover.gallery {
     background-color: #b545da; }
 header .menu ul.main-nav li a:hover.blog {
