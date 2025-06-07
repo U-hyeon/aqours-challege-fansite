@@ -211,9 +211,6 @@
          th:value="${_csrf.token}"
   >
 
-  <button onclick="printRotateValue()">New</button>
-
-
   <script>
       /**
        * 칠판 텍스트저장 - 카테고리: C001
@@ -347,10 +344,10 @@
       createHandles(selectedBox);
 
       document.getElementById("textContent").value = box.innerText;
-      document.getElementById("fontSize").value = parseInt(box.style.fontSize);
-      document.getElementById("fontColor").value = box.style.color;
+      document.getElementById("fontSize").value = parseFloat(box.style.fontSize);
+      document.getElementById("fontColor").value = rgbToHex(box.style.color);
       document.getElementById("rotation").value = parseFloat(box.getAttribute("data-rotation"));
-      document.getElementById("fontFamily").value = box.style.fontFamily || "Arial";
+      document.getElementById("fontFamily").value = box.style.fontFamily ? box.style.fontFamily : "Arial";
     }
 
     function updateSelectedTextBox() {
@@ -358,7 +355,7 @@
       selectedBox.innerText = document.getElementById("textContent").value;
       selectedBox.style.fontSize = document.getElementById("fontSize").value + "px";
       selectedBox.style.color = document.getElementById("fontColor").value;
-      selectedBox.style.fontFamily = document.getElementById("fontFamily").value;
+      // selectedBox.style.fontFamily = document.getElementById("fontFamily").value;
 
       const angle = getRotateValue(selectedBox);
       const correctAngle = angle + 90;
