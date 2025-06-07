@@ -34,6 +34,10 @@ public class RpPostSaveRequest {
      * 텍스트 회전 Z축
      */
     private BigDecimal rotationZ;
+    /**
+     * 요청한 유저의 이메일
+     */
+    private String userEmail;
 
     public String getCategory() {
         return category;
@@ -61,5 +65,13 @@ public class RpPostSaveRequest {
 
     public BigDecimal getRotationZ() {
         return rotationZ;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 }

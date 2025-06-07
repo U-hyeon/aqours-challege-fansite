@@ -19,7 +19,7 @@ public class RpPost {
      * 기본키
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long rpPostId;
 
     /**
@@ -69,7 +69,7 @@ public class RpPost {
     /**
      * 작성일시
      */
-    @Column(name = "reg_time")
+    @Column(name = "reg_time", insertable = false, updatable = false)
     private LocalDateTime regTime;
     /**
      * 수정자
@@ -80,13 +80,13 @@ public class RpPost {
     /**
      * 수정일시
      */
-    @Column(name = "modify_time")
+    @Column(name = "modify_time", insertable = false, updatable = false)
     private LocalDateTime modifyTime;
     /**
      * Y: 삭제, N: 삭제되지 않음
      */
     @Column(name = "is_deleted", length = 1, nullable = false)
-    private String isDeleted;
+    private String isDeleted = "N";
 
     public Long getRpPostId() {
         return rpPostId;
