@@ -212,6 +212,8 @@
   >
 
   <script>
+      document.addEventListener('DOMContentLoaded', getPostListAndRender);
+
       /**
        * 칠판 텍스트저장 - 카테고리: C001
        */
@@ -272,7 +274,10 @@
               })
       }
 
-      function getPostList() {
+      /**
+       * db에 저장된 rp-post 목록을 불러와 렌더
+       */
+      function getPostListAndRender() {
           const csrfToken = document.querySelector('meta[name="_csrf"]').content;
           const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
@@ -285,12 +290,51 @@
               body: "C001",
           })
               .then(response => response.json())
-              .then(data => {
-                  console.log(data);
+              .then(result => {
+                  renderCurrentPosts(result)
               })
               .catch(e => {
                   console.log("error: " + e);
               })
+      }
+
+      /**
+       * 리스트 정보를 이용하여 텍스트박스 렌더링
+       */
+      function renderCurrentPosts(postList) {
+          for (const post of postList) {
+              renderTextBox(post);
+          }
+      }
+
+      /**
+       * 텍스트박스 렌더링
+       */
+      function renderTextBox(post) {
+          const previewContainer = document.createElement("div");
+
+          previewContainer.className = "text-box";
+          previewContainer.innerText = post.textContent;
+          previewContainer.style.left = `${post.positionX}px`;
+          previewContainer.style.top = `${post.positionY}px`;
+          previewContainer.style.whiteSpace = "nowrap";
+          previewContainer.style.textAlign = post.textAlign;
+          previewContainer.style.fontSize = "24px";
+          previewContainer.style.color = post.textColor;
+          previewContainer.style.textShadow = `
+            1px 1px 3px ${post.textColor},
+            -1px -1px 3px ${post.textColor},
+            1px -1px 3px ${post.textColor},
+            -1px 1px 3px ${post.textColor}
+          `;
+          previewContainer.style.transform = `scale(${post.scale}) rotate(${post.rotationZ}deg)`;
+          previewContainer.setAttribute("data-rotation", post.rotationZ);
+          previewContainer.setAttribute("data-scale", post.scale);
+          previewContainer.setAttribute("data-bold", "false");
+          previewContainer.setAttribute("data-italic", "false");
+          previewContainer.setAttribute("data-underline", "false");
+
+          preview.appendChild(previewContainer);
       }
   </script>
   <script>
