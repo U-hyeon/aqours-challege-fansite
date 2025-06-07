@@ -212,6 +212,7 @@
   >
 
   <script>
+      // 페이지 로드 후 저장된 rppost 및 제출을 위한 텍스트박스 렌더링
       document.addEventListener('DOMContentLoaded', getPostListAndRender);
 
       /**
@@ -514,6 +515,9 @@
       };
     }
 
+    /**
+     * rgb 색상코드(style 요소)를 hex 색상코드(input 요소)로 변환
+     */
     function rgbToHex(rgb) {
       const res = rgb.match(/\d+/g);
       if (!res) return "#ffffff";
@@ -535,7 +539,7 @@
     }
 
     /**
-     * 텍스트 왼쪽 정렬
+     * 텍스트 왼쪽 정렬버튼 동작
      */
     function alignLeft() {
         document.querySelector('.align-button.align-left').classList.add('on');
@@ -543,8 +547,9 @@
         document.querySelector('.align-button.align-right').classList.remove('on');
         alignText('left');
     }
+
     /**
-     * 텍스트 가운데 정렬
+     * 텍스트 가운데 정렬버튼 동작
      */
     function toggleAlignCenter() {
         if (document.querySelector('.align-button.align-center').classList.contains('on')) {
@@ -557,8 +562,9 @@
         document.querySelector('.align-button.align-right').classList.remove('on');
         alignText('center');
     }
+
     /**
-     * 텍스트 오른쪽 정렬
+     * 텍스트 오른쪽 정렬버튼 동작
      */
     function toggleAlignRight() {
         if (document.querySelector('.align-button.align-right').classList.contains('on')) {
@@ -577,22 +583,6 @@
      */
     function alignText(alignment){
       selectedBox.style.textAlign = alignment;
-    }
-
-    function printRotateValue() {
-      console.log(getRotateValue(selectedBox));
-    }
-
-    /**
-     * 텍스트박스 회전각 반환
-     */
-    function getRotateValue(element) {
-      const transform = element.style.transform;
-      const match = transform.match(/rotate\(([-\d.]+)deg\)/);
-      if (match) {
-        return match[1]; // 문자열 그대로 반환
-      }
-      return 0; // rotate가 없으면 0
     }
   </script>
 </div>
