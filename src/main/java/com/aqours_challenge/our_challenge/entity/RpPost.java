@@ -42,7 +42,12 @@ public class RpPost {
     @Column(name = "text_color", length = 30, nullable = false)
     private String textColor;
     /**
-     * 텍스트 크기
+     * 텍스트 사이즈 (px)
+     */
+    @Column(name = "text_size", precision = 10, scale = 2, nullable = false)
+    private BigDecimal textSize;
+    /**
+     * 텍스트박스 크기
      */
     @Column(name = "scale", precision = 10, scale = 5, nullable = false)
     private BigDecimal scale;
@@ -128,6 +133,14 @@ public class RpPost {
 
     public void setTextColor(String textColor) {
         this.textColor = textColor;
+    }
+
+    public BigDecimal getTextSize() {
+        return textSize;
+    }
+
+    public void setTextSize(BigDecimal textSize) {
+        this.textSize = textSize;
     }
 
     public BigDecimal getScale() {

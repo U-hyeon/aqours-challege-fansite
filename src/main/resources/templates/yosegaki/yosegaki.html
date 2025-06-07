@@ -239,6 +239,7 @@
               text: textbox.innerText,
               textAlign: textbox.style.textAlign,
               textColor: textbox.style.color,
+              textSize: parseFloat(textbox.style.fontSize),
               scale: scale,
               positionX: positionX,
               positionY: positionY,
@@ -264,7 +265,7 @@
               .then(response => {
                   if (response.ok) {
                       alert("Upload completed!");
-                      location.replace("/");
+                      location.replace("/yosegaki");
                   } else {
                       alert("Sorry, there was an error.");
                   }
@@ -319,7 +320,7 @@
           previewContainer.style.top = `${post.positionY}px`;
           previewContainer.style.whiteSpace = "nowrap";
           previewContainer.style.textAlign = post.textAlign;
-          previewContainer.style.fontSize = "24px";
+          previewContainer.style.fontSize = `${post.textSize}px`;
           previewContainer.style.color = post.textColor;
           previewContainer.style.textShadow = `
             1px 1px 3px ${post.textColor},

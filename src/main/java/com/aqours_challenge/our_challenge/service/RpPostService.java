@@ -34,6 +34,7 @@ public class RpPostService {
                     rpPost.getTextContent(),
                     rpPost.getTextAlign(),
                     rpPost.getTextColor(),
+                    rpPost.getTextSize(),
                     rpPost.getScale(),
                     rpPost.getPositionX(),
                     rpPost.getPositionY(),
@@ -53,19 +54,22 @@ public class RpPostService {
     public RpPost saveRpPost(RpPostSaveRequest rpPostSaveRequest) {
         RpPost rpPost = new RpPost();
         // DTO 로부터 주요데이터 저장
-        rpPost.setCategory(rpPostSaveRequest.getCategory());
-        rpPost.setTextContent(rpPostSaveRequest.getText());
-        rpPost.setTextAlign(rpPostSaveRequest.getTextAlign());
-        rpPost.setTextColor(rpPostSaveRequest.getTextColor());
-        rpPost.setScale(BigDecimal.valueOf(rpPostSaveRequest.getScale().doubleValue()));
-        rpPost.setPositionX(BigDecimal.valueOf(rpPostSaveRequest.getPositionX().doubleValue()));
-        rpPost.setPositionY(BigDecimal.valueOf(rpPostSaveRequest.getPositionY().doubleValue()));
-        rpPost.setRotationZ(BigDecimal.valueOf(rpPostSaveRequest.getRotationZ().doubleValue()));
+        rpPost.setCategory( rpPostSaveRequest.getCategory() );
+        rpPost.setTextContent( rpPostSaveRequest.getText() );
+        rpPost.setTextAlign( rpPostSaveRequest.getTextAlign() );
+        rpPost.setTextColor( rpPostSaveRequest.getTextColor() );
+        rpPost.setTextSize( BigDecimal.valueOf( rpPostSaveRequest.getTextSize().doubleValue() ) );
+        rpPost.setScale( BigDecimal.valueOf( rpPostSaveRequest.getScale().doubleValue() ) );
+        rpPost.setPositionX( BigDecimal.valueOf( rpPostSaveRequest.getPositionX().doubleValue() ) );
+        rpPost.setPositionY( BigDecimal.valueOf( rpPostSaveRequest.getPositionY().doubleValue() ) );
+        rpPost.setRotationZ( BigDecimal.valueOf( rpPostSaveRequest.getRotationZ().doubleValue() ) );
 
         // 그 외 데이터 자동 작성
-        MemberSearchResponse userCd = memberRepository.findMemberIdByEmail(rpPostSaveRequest.getUserEmail());
-        rpPost.setRegUser(userCd.getMemberId());
-        rpPost.setModifyUser(userCd.getMemberId());
+        MemberSearchResponse userCd = memberRepository.findMemberIdByEmail(
+                rpPostSaveRequest.getUserEmail()
+        );
+        rpPost.setRegUser( userCd.getMemberId() );
+        rpPost.setModifyUser( userCd.getMemberId() );
 
         return rpPostRepository.save(rpPost);
     }

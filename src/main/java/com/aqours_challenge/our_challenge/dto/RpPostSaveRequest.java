@@ -23,7 +23,11 @@ public class RpPostSaveRequest {
      */
     private String textColor;
     /**
-     * 텍스트 크기
+     * 텍스트 사이즈 (px)
+     */
+    private BigDecimal textSize;
+    /**
+     * 텍스트박스 크기
      */
     private BigDecimal scale;
     /**
@@ -57,6 +61,10 @@ public class RpPostSaveRequest {
 
     public String getTextColor() {
         return textColor;
+    }
+
+    public BigDecimal getTextSize() {
+        return textSize;
     }
 
     public BigDecimal getScale() {

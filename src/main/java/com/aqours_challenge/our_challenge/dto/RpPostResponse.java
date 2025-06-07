@@ -24,7 +24,11 @@ public class RpPostResponse {
      */
     private String textColor;
     /**
-     * 텍스트 크기
+     * 텍스트 사이즈 (px)
+     */
+    private BigDecimal textSize;
+    /**
+     * 텍스트박스 크기
      */
     private BigDecimal scale;
     /**
@@ -51,13 +55,15 @@ public class RpPostResponse {
     public RpPostResponse(
             Long rpPostId, String textContent,
             String textAlign, String textColor,
-            BigDecimal scale, BigDecimal positionX,
-            BigDecimal positionY, BigDecimal rotationZ,
-            Long regUserId, LocalDateTime regTime) {
+            BigDecimal textSize, BigDecimal scale,
+            BigDecimal positionX, BigDecimal positionY,
+            BigDecimal rotationZ, Long regUserId,
+            LocalDateTime regTime) {
         this.rpPostId = rpPostId;
         this.textContent = textContent;
         this.textAlign = textAlign;
         this.textColor = textColor;
+        this.textSize = textSize;
         this.scale = scale;
         this.positionX = positionX;
         this.positionY = positionY;
@@ -96,6 +102,14 @@ public class RpPostResponse {
 
     public void setTextColor(String textColor) {
         this.textColor = textColor;
+    }
+
+    public BigDecimal getTextSize() {
+        return textSize;
+    }
+
+    public void setTextSize(BigDecimal textSize) {
+        this.textSize = textSize;
     }
 
     public BigDecimal getScale() {
