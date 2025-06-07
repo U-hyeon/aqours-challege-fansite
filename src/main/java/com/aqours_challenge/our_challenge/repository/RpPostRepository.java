@@ -13,5 +13,5 @@ public interface RpPostRepository extends JpaRepository<RpPost, Long> {
     /**
      * 렌더링에 필요한 최소 정보들만 반환
      */
-    List<RpPost> findByCategoryAndIsDeleted(String category, String isDeleted);
+    List<RpPost> findByCategoryAndIsDeletedOrderByRegTime(String category, String isDeleted);
 }

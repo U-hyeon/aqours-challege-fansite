@@ -25,7 +25,7 @@ public class RpPostService {
     }
 
     public List<RpPostResponse> findByCategory(String category) {
-        List<RpPost> rpPosts = rpPostRepository.findByCategoryAndIsDeleted(category, "N");
+        List<RpPost> rpPosts = rpPostRepository.findByCategoryAndIsDeletedOrderByRegTime(category, "N");
         List<RpPostResponse> rpPostResponses = new ArrayList<>();
 
         for (RpPost rpPost : rpPosts) {
