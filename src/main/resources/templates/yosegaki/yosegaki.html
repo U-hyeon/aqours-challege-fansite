@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/header-content}"
+>
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+
+<!-- 사용자 css 추가 -->
+<th:block layout:fragment="css">
+  <style>
+    #wrapper {
+      background-image: url("/img/gallery_horizon.png");
+      background-size: 110% 120%;
+      background-position-x: -50px;
+    }
+    .fieldError {
+      color: #bd2130;
+    }
+
+    /*가로세로 4k 화질 기준 6분의 1*/
+    #bg-wrapper {
+        position: relative;
+        /*top: 50%;  !* 중앙 정렬을 위한 기준점 *!*/
+        /*left: 50%;*/
+        width: 640px;
+        height: 360px;
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center;
+        pointer-events: none;
+        transform-origin: center center;
+        z-index: 0;
+    }
+
+    #preview-container {
+        position: relative;
+        width: auto;
+        height: auto;
+        background-color: #245441;
+        overflow: hidden;
+        margin: auto;
+        border: 10px solid #EBBC6B;
+    }
+
+    .text-box {
+      position: absolute;
+      cursor: move;
+      user-select: none;
+      transform-origin: center center;
+      padding: 8px;
+      border-radius: 4px;
+      white-space: pre-wrap;
+      text-shadow:
+              1px 1px 0 #ccc,
+              -1px -1px 0 #ccc,
+              1px -1px 0 #ccc,
+              -1px 1px 0 #ccc;  /* 번짐 효과 */
+    }
+
+    .text-box.selected {
+      border: 1px dashed #000;
+      background-color: rgba(50,100,255, 0.1);
+    }
+
+    .resize-handle {
+      width: 10px;
+      height: 10px;
+      background-color: #fff;
+      border: 1px solid #000;
+      position: absolute;
+      z-index: 2;
+    }
+
+    .resize-handle.corner {
+      cursor: nwse-resize;
+    }
+
+    .rotation-handler {
+      width: 12px;
+      height: 12px;
+      background-color: #4CAF50;
+      border-radius: 50%;
+      border: 2px solid white;
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      cursor: grab;
+      z-index: 3;
+    }
+
+    #text-editor {
+        padding: 10px;
+        border-top: #eeeeee 1px ridge;
+        width: fit-content;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    input[type=color],
+    input[type=range],
+    input[type=text],
+    input[type=number] {
+      margin: 4px;
+    }
+
+    button {
+      padding: 0 5px;
+    }
+
+    .style-buttons button {
+      margin: 2px;
+      width:30px;
+      font-size:1rem;
+      font-family: Serif,serif;
+      vertical-align: middle;
+    }
+
+    input#fontColor { transform: translateY(4px); }
+
+    textarea#textContent {margin-top: 5px;}
+
+    .align-button {
+        height: 28px;
+        border: 2px solid #333;
+        background-color: #cccccc;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .align-button.on{
+        background-color: #18b6ff;
+    }
+
+    .align-button svg {
+        width: 100%;
+        height: 100%;
+        fill: #333;
+    }
+  </style>
+</th:block>
+
+<body>
+
+<div layout:fragment="content">
+  <div class="title"></div>
+  <div class="yosegaki-wrapper">
+    <!-- render all entry -->
+  </div>
+
+  <!-- 미리보기 컨테이너에 배경 오버레이 추가 -->
+  <!-- 4k 이미지 기준 1/6 사이즈로 출력-->
+  <div style="display: flex; padding: 30px 0 10px 0;">
+    <div id="preview-container">
+      <div id="bg-wrapper">
+      </div>
+    </div>
+  </div>
+
+
+  <div id="text-editor">
+    <div>
+      <span class="style-buttons">
+        <button class="align-button align-left on" onclick="alignLeft()">
+            <svg viewBox="0 0 24 24">
+                <rect x="2" y="4" width="20" height="2" />
+                <rect x="2" y="9" width="14" height="2" />
+                <rect x="2" y="14" width="18" height="2" />
+            </svg>
+        </button>
+        <button class="align-button align-center" onclick="toggleAlignCenter()">
+            <svg viewBox="0 0 24 24">
+                <rect x="4" y="4" width="16" height="2" />
+                <rect x="6" y="9" width="12" height="2" />
+                <rect x="5" y="14" width="14" height="2" />
+            </svg>
+        </button>
+        <button class="align-button align-right" onclick="toggleAlignRight()">
+            <svg viewBox="0 0 24 24">
+                <rect x="2" y="4" width="20" height="2" />
+                <rect x="8" y="9" width="14" height="2" />
+                <rect x="4" y="14" width="18" height="2" />
+            </svg>
+        </button>
+        <button onclick="toggleStyle('italic')" style="font-style: italic;">I</button>
+<!--        <button onclick="toggleStyle('underline')" style="text-decoration: underline;">U</button>-->
+        <input type="color" id="fontColor" oninput="updateSelectedTextBox()" />
+      </span>
+    </div>
+
+    <div>
+      <textarea cols="30" rows="5" id="textContent" oninput="updateSelectedTextBox()"
+                placeholder="Input message" required>
+      </textarea>
+    </div>
+    <div style="text-align: right;">
+      <button onclick="save()">submit</button>
+    </div>
+    <div>
+      <input type="range" id="fontSize" style="display:none; width: 50px" min="1" max="30" oninput="updateSelectedTextBox()" />
+    </div>
+  </div>
+
+  <input type="hidden" class="token" th:name="${_csrf.parameterName}"
+         th:value="${_csrf.token}"
+  >
+
+  <script>
+      /**
+       * 칠판 텍스트저장 - 카테고리: C001
+       */
+      function save() {
+          const textbox = document.querySelector('.text-box');
+          const contentsToSave = getContentsToSave(textbox, 'C001');
+
+          saveRpPost(contentsToSave);
+      }
+
+      /**
+       * 텍스트 내용, 좌표, 회전각, 확대비율 반환
+       */
+      function getContentsToSave(textbox, category) {
+          const textBoxTransform = textbox.style.transform;
+          const scale = parseFloat( textBoxTransform.match(/scale\(([^)]+)\)/)[1] );
+          const rotation = parseFloat( textBoxTransform.match(/rotate\(([^)]+)deg\)/)[1] );
+          const positionX = parseFloat( textbox.style.left );
+          const positionY = parseFloat( textbox.style.top );
+
+          return JSON.stringify({
+              category: category,
+              text: textbox.innerText,
+              textAlign: textbox.style.textAlign,
+              textColor: textbox.style.color,
+              scale: scale,
+              positionX: positionX,
+              positionY: positionY,
+              rotationZ: rotation,
+          });
+      }
+
+      /**
+       * 저장 api 요청
+       */
+      function saveRpPost(rpPost) {
+          const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+          const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+          fetch("api/yosegaki/new", {
+              method: "post",
+              headers: {
+                  "Content-Type": "application/json",
+                  [csrfHeader]: csrfToken,
+              },
+              body: rpPost,
+          })
+              .then(response => {
+                  if (response.ok) {
+                      alert("Upload completed!");
+                      location.replace("/");
+                  } else {
+                      alert("Sorry, there was an error.");
+                  }
+              })
+              .catch(e => {
+                  console.log("error: " + e);
+              })
+      }
+  </script>
+  <script>
+    let selectedBox = null;
+    let isDragging = false;
+    let offsetX = 0, offsetY = 0;
+    let rotating = false;
+    let initialMouse = {}, initialTransform = {};
+
+    // 배경 이미지 드래그 기능
+    let isDraggingBackground = false;
+    let startX, startY;
+
+    const preview = document.getElementById("preview-container");
+
+    document.addEventListener("DOMContentLoaded", addTextBox);
+
+    function addTextBox() {
+      const box = document.createElement("div");
+      box.className = "text-box";
+      box.innerText = "メッセージを入力";
+      box.style.left = "100px";
+      box.style.top = "100px";
+      box.style.whiteSpace = "nowrap";
+      box.style.textAlign = "left";
+      box.style.fontSize = "24px";
+      box.style.color = "#000";
+      box.style.transform = "scale(1) rotate(0deg)";
+      box.setAttribute("data-rotation", 0);
+      box.setAttribute("data-scale", 1);
+      box.setAttribute("data-bold", "false");
+      box.setAttribute("data-italic", "false");
+      box.setAttribute("data-underline", "false");
+
+      box.addEventListener("mousedown", startDrag);
+      box.addEventListener("click", (e) => {
+        e.stopPropagation();
+        selectTextBox(box);
+      });
+
+      preview.appendChild(box);
+      selectTextBox(box);
+    }
+
+    function createHandles(box) {
+      if (box.querySelector(".resize-handle")) return;
+
+      const corner = document.createElement("div");
+      corner.className = "resize-handle corner";
+      corner.style.right = "-5px";
+      corner.style.bottom = "-5px";
+      corner.addEventListener("mousedown", startResize);
+      box.appendChild(corner);
+
+      const rotationHandler = document.createElement("div");
+      rotationHandler.className = "rotation-handler";
+      rotationHandler.addEventListener("mousedown", startRotate);
+      box.appendChild(rotationHandler);
+    }
+
+    function removeHandles(box) {
+      box.querySelectorAll(".resize-handle, .rotation-handler").forEach(el => el.remove());
+    }
+
+    function selectTextBox(box) {
+      if (selectedBox && selectedBox !== box) {
+        selectedBox.classList.remove("selected");
+        removeHandles(selectedBox);
+      }
+      selectedBox = box;
+      selectedBox.classList.add("selected");
+      createHandles(selectedBox);
+
+      document.getElementById("textContent").value = box.innerText;
+      document.getElementById("fontSize").value = parseFloat(box.style.fontSize);
+      document.getElementById("fontColor").value = rgbToHex(box.style.color);
+      document.getElementById("rotation").value = parseFloat(box.getAttribute("data-rotation"));
+      document.getElementById("fontFamily").value = box.style.fontFamily ? box.style.fontFamily : "Arial";
+    }
+
+    function updateSelectedTextBox() {
+      if (!selectedBox) return;
+      selectedBox.innerText = document.getElementById("textContent").value;
+      selectedBox.style.fontSize = document.getElementById("fontSize").value + "px";
+      selectedBox.style.color = document.getElementById("fontColor").value;
+
+      const angle = parseFloat(selectedBox.getAttribute("data-rotation") || "0");
+      const scale = parseFloat(selectedBox.getAttribute("data-scale") || "1");
+      selectedBox.setAttribute("data-rotation", angle);
+      selectedBox.setAttribute("data-scale", scale);
+    }
+
+    function toggleStyle(style) {
+      if (!selectedBox) return;
+
+      let active = false;
+      if (style === "bold") {
+        active = selectedBox.style.fontWeight === "bold";
+        selectedBox.style.fontWeight = active ? "normal" : "bold";
+      } else if (style === "italic") {
+        active = selectedBox.style.fontStyle === "italic";
+        selectedBox.style.fontStyle = active ? "normal" : "italic";
+      } else if (style === "underline") {
+        active = selectedBox.style.textDecoration === "underline";
+        selectedBox.style.textDecoration = active ? "none" : "underline";
+      }
+    }
+
+    function startDrag(e) {
+      if (!selectedBox || e.target.classList.contains("resize-handle") || e.target.classList.contains("rotation-handler")) return;
+      isDragging = true;
+      offsetX = e.offsetX;
+      offsetY = e.offsetY;
+      document.addEventListener("mousemove", drag);
+      document.addEventListener("mouseup", stopDrag);
+    }
+
+    function drag(e) {
+      if (!isDragging || !selectedBox) return;
+      const rect = preview.getBoundingClientRect();
+      selectedBox.style.left = (e.clientX - rect.left - offsetX) + "px";
+      selectedBox.style.top = (e.clientY - rect.top - offsetY) + "px";
+    }
+
+    function stopDrag() {
+      isDragging = false;
+      document.removeEventListener("mousemove", drag);
+      document.removeEventListener("mouseup", stopDrag);
+    }
+
+    function startResize(e) {
+        const boxRect = selectedBox.getBoundingClientRect();
+        const centerX = boxRect.left + boxRect.width / 2;
+        const centerY = boxRect.top + boxRect.height / 2;
+
+        initialTransform = {
+            scale: parseFloat(selectedBox.getAttribute("data-scale")) || 1,
+            fontSize: parseFloat(window.getComputedStyle(selectedBox).fontSize),
+            distance: Math.hypot(e.clientX - centerX, e.clientY - centerY)
+        };
+
+        document.addEventListener("mousemove", resize);
+        document.addEventListener("mouseup", stopResize);
+    }
+
+    function resize(e) {
+        const boxRect = selectedBox.getBoundingClientRect();
+        const centerX = boxRect.left + boxRect.width / 2;
+        const centerY = boxRect.top + boxRect.height / 2;
+
+        const currentDistance = Math.hypot(e.clientX - centerX, e.clientY - centerY);
+        const scaleRatio = currentDistance / initialTransform.distance;
+        const newScale = Math.max(0.2, initialTransform.scale * scaleRatio);
+
+        selectedBox.setAttribute("data-scale", newScale);
+
+        const angle = parseFloat(selectedBox.getAttribute("data-rotation") || 0);
+        selectedBox.style.transform = `scale(${newScale}) rotate(${angle}deg)`;
+        selectedBox.style.fontSize = (initialTransform.fontSize * newScale).toFixed(2) + "px";
+    }
+
+    function stopResize() {
+      document.removeEventListener("mousemove", resize);
+      document.removeEventListener("mouseup", stopResize);
+    }
+
+    function startRotate(e) {
+      e.preventDefault();
+      const rect = selectedBox.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      document.onmousemove = function (ev) {
+        const angle = Math.atan2(ev.clientY - cy, ev.clientX - cx) * 180 / Math.PI;
+        const correctAngle = angle + 90;
+        selectedBox.setAttribute("data-rotation", correctAngle.toFixed(2));
+        const scale = selectedBox.getAttribute("data-scale");
+        selectedBox.style.transform = `scale(${scale}) rotate(${correctAngle}deg)`;
+        document.getElementById("rotation").value = correctAngle.toFixed(2);
+      };
+      document.onmouseup = () => {
+        document.onmousemove = null;
+        document.onmouseup = null;
+      };
+    }
+
+    function rgbToHex(rgb) {
+      const res = rgb.match(/\d+/g);
+      if (!res) return "#ffffff";
+      return "#" + res.slice(0, 3).map(x => (+x).toString(16).padStart(2, "0")).join("");
+    }
+
+    function getAlpha(rgb) {
+      const res = rgb.match(/rgba?\(([^)]+)\)/);
+      if (!res) return 1;
+      const vals = res[1].split(",");
+      return vals.length === 4 ? parseFloat(vals[3]) : 1;
+    }
+
+    function hexToRgba(hex, opacity) {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+    }
+
+    /**
+     * 텍스트 왼쪽 정렬
+     */
+    function alignLeft() {
+        document.querySelector('.align-button.align-left').classList.add('on');
+        document.querySelector('.align-button.align-center').classList.remove('on');
+        document.querySelector('.align-button.align-right').classList.remove('on');
+        alignText('left');
+    }
+    /**
+     * 텍스트 가운데 정렬
+     */
+    function toggleAlignCenter() {
+        if (document.querySelector('.align-button.align-center').classList.contains('on')) {
+            alignLeft();
+            return;
+        }
+
+        document.querySelector('.align-button.align-left').classList.remove('on');
+        document.querySelector('.align-button.align-center').classList.add('on');
+        document.querySelector('.align-button.align-right').classList.remove('on');
+        alignText('center');
+    }
+    /**
+     * 텍스트 오른쪽 정렬
+     */
+    function toggleAlignRight() {
+        if (document.querySelector('.align-button.align-right').classList.contains('on')) {
+            alignLeft();
+            return;
+        }
+
+        document.querySelector('.align-button.align-left').classList.remove('on');
+        document.querySelector('.align-button.align-center').classList.remove('on');
+        document.querySelector('.align-button.align-right').classList.add('on');
+        alignText('right');
+    }
+
+    /**
+     * 정렬 - left, center, right
+     */
+    function alignText(alignment){
+      selectedBox.style.textAlign = alignment;
+    }
+
+    function printRotateValue() {
+      console.log(getRotateValue(selectedBox));
+    }
+
+    /**
+     * 텍스트박스 회전각 반환
+     */
+    function getRotateValue(element) {
+      const transform = element.style.transform;
+      const match = transform.match(/rotate\(([-\d.]+)deg\)/);
+      if (match) {
+        return match[1]; // 문자열 그대로 반환
+      }
+      return 0; // rotate가 없으면 0
+    }
+  </script>
+</div>
+
+</body>
+</html>
