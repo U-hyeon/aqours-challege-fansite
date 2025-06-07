@@ -271,6 +271,27 @@
                   console.log("error: " + e);
               })
       }
+
+      function getPostList() {
+          const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+          const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+          fetch("/api/yosegaki/from-category", {
+              method: "post",
+              headers: {
+                  "Content-Type": "application/json",
+                  [csrfHeader]: csrfToken,
+              },
+              body: "C001",
+          })
+              .then(response => response.json())
+              .then(data => {
+                  console.log(data);
+              })
+              .catch(e => {
+                  console.log("error: " + e);
+              })
+      }
   </script>
   <script>
     let selectedBox = null;

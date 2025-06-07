@@ -1,94 +1,70 @@
-package com.aqours_challenge.our_challenge.entity;
-
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+package com.aqours_challenge.our_challenge.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * 롤링페이퍼 작성된 데이터 테이블
+ * RpPost 필수데이터 조회
  */
-@Entity
-@Table(name = "rp_post")
-public class RpPost {
+public class RpPostResponse {
     /**
      * 기본키
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long rpPostId;
-
-    /**
-     * 카테고리
-     */
-    @Column(name = "category", length = 10, nullable = false)
-    @NotBlank
-    private String category;
     /**
      * 텍스트 내용
      */
-    @Column(name = "text_content", length = 100, nullable = false)
-    @NotBlank
     private String textContent;
     /**
      * 텍스트 정렬
      */
-    @Column(name = "text_align", length = 6, nullable = false)
     private String textAlign;
     /**
      * 텍스트 컬러
      */
-    @Column(name = "text_color", length = 30, nullable = false)
     private String textColor;
     /**
      * 텍스트 크기
      */
-    @Column(name = "scale", precision = 10, scale = 5, nullable = false)
     private BigDecimal scale;
     /**
      * 텍스트 위치 X
      */
-    @Column(name = "position_x", precision = 10, scale = 4, nullable = false)
     private BigDecimal positionX;
     /**
      * 텍스트 위치 Y
      */
-    @Column(name = "position_y", precision = 10, scale = 4, nullable = false)
     private BigDecimal positionY;
     /**
      * 텍스트 회전 Z축
      */
-    @Column(name = "rotation_z", precision = 10, scale = 4, nullable = false)
     private BigDecimal rotationZ;
-
     /**
      * 작성자
      */
-    @Column(name = "reg_user", nullable = false)
-    @JoinColumn(name = "member_id")
     private Long regUser;
     /**
      * 작성일시
      */
-    @Column(name = "reg_time", insertable = false, updatable = false)
     private LocalDateTime regTime;
-    /**
-     * 수정자
-     */
-    @Column(name = "modify_user", nullable = false)
-    @JoinColumn(name = "member_id")
-    private Long modifyUser;
-    /**
-     * 수정일시
-     */
-    @Column(name = "modify_time", insertable = false, updatable = false)
-    private LocalDateTime modifyTime;
-    /**
-     * Y: 삭제, N: 삭제되지 않음
-     */
-    @Column(name = "is_deleted", length = 1, nullable = false)
-    private String isDeleted = "N";
+
+    public RpPostResponse(
+            Long rpPostId, String textContent,
+            String textAlign, String textColor,
+            BigDecimal scale, BigDecimal positionX,
+            BigDecimal positionY, BigDecimal rotationZ,
+            Long regUserId, LocalDateTime regTime) {
+        this.rpPostId = rpPostId;
+        this.textContent = textContent;
+        this.textAlign = textAlign;
+        this.textColor = textColor;
+        this.scale = scale;
+        this.positionX = positionX;
+        this.positionY = positionY;
+        this.rotationZ = rotationZ;
+        this.regUser = regUserId;
+        this.regTime = regTime;
+    }
 
     public Long getRpPostId() {
         return rpPostId;
@@ -96,14 +72,6 @@ public class RpPost {
 
     public void setRpPostId(Long rpPostId) {
         this.rpPostId = rpPostId;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
     }
 
     public String getTextContent() {
@@ -176,29 +144,5 @@ public class RpPost {
 
     public void setRegTime(LocalDateTime regTime) {
         this.regTime = regTime;
-    }
-
-    public Long getModifyUser() {
-        return modifyUser;
-    }
-
-    public void setModifyUser(Long modifyUser) {
-        this.modifyUser = modifyUser;
-    }
-
-    public LocalDateTime getModifyTime() {
-        return modifyTime;
-    }
-
-    public void setModifyTime(LocalDateTime modifyTime) {
-        this.modifyTime = modifyTime;
-    }
-
-    public String getIsDeleted() {
-        return isDeleted;
-    }
-
-    public void setIsDeleted(String isDeleted) {
-        this.isDeleted = isDeleted;
     }
 }

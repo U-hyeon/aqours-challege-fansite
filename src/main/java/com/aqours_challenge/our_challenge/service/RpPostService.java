@@ -1,6 +1,7 @@
 package com.aqours_challenge.our_challenge.service;
 
 import com.aqours_challenge.our_challenge.dto.MemberSearchResponse;
+import com.aqours_challenge.our_challenge.dto.RpPostResponse;
 import com.aqours_challenge.our_challenge.dto.RpPostSaveRequest;
 import com.aqours_challenge.our_challenge.entity.RpPost;
 import com.aqours_challenge.our_challenge.repository.MemberRepository;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
@@ -19,6 +22,29 @@ public class RpPostService {
     public RpPostService(RpPostRepository rpPostRepository, MemberRepository memberRepository) {
         this.rpPostRepository = rpPostRepository;
         this.memberRepository = memberRepository;
+    }
+
+    public List<RpPostResponse> findByCategory(String category) {
+        List<RpPost> rpPosts = rpPostRepository.findByCategoryAndIsDeleted(category, "N");
+        List<RpPostResponse> rpPostResponses = new ArrayList<>();
+
+        for (RpPost rpPost : rpPosts) {
+            RpPostResponse response = new RpPostResponse(
+                    rpPost.getRpPostId(),
+                    rpPost.getTextContent(),
+                    rpPost.getTextAlign(),
+                    rpPost.getTextColor(),
+                    rpPost.getScale(),
+                    rpPost.getPositionX(),
+                    rpPost.getPositionY(),
+                    rpPost.getRotationZ(),
+                    rpPost.getRegUser(),
+                    rpPost.getRegTime()
+            );
+            rpPostResponses.add(response);
+        }
+
+        return rpPostResponses;
     }
 
     /**
@@ -41,6 +67,6 @@ public class RpPostService {
         rpPost.setRegUser(userCd.getMemberId());
         rpPost.setModifyUser(userCd.getMemberId());
 
-        return rpPostRepository.save(rpPost); // Save the RpPost using the repository
+        return rpPostRepository.save(rpPost);
     }
 }

@@ -5,8 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 
 @Repository
 @Transactional
 public interface RpPostRepository extends JpaRepository<RpPost, Long> {
+    /**
+     * 렌더링에 필요한 최소 정보들만 반환
+     */
+    List<RpPost> findByCategoryAndIsDeleted(String category, String isDeleted);
 }
