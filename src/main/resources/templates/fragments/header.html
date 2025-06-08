@@ -19,8 +19,8 @@
           </li>
           <li>
             <a class="news" href="https://x.com/aqours_fan_rp">
-              <span class="jp">情報</span>
-              <span class="en">NEWS</span>
+              <span class="jp">総合案内所</span>
+              <span class="en">INFORMATION</span>
             </a>
           </li>
 <!--          <li>-->
@@ -36,9 +36,10 @@
             </a>
           </li>
           <li>
-            <a class="gallery" href="/gallery">
+<!--            <a class="gallery" href="/gallery">-->
+            <a class="gallery" onclick="notOpened()">
               <span class="jp">写真館</span>
-              <span class="en">GALLERY</span>
+              <span class="en">PHOTO STUDIO</span>
             </a>
           </li>
 <!--          <li>-->
@@ -119,6 +120,10 @@
         document.querySelector(".main-nav .top").closest("li").className = 'active';
       }
     });
+
+    function notOpened() {
+      alert('この先 工事中\nご迷惑をおかけしております');
+    }
   </script>
 </div>
 </html>
