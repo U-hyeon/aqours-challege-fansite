@@ -71,9 +71,9 @@
       </div>
       <nav class="account-dropdown" sec:authorize="isAuthenticated()">
         <ul>
-          <li>
-            <a href="/mypage">MY PAGE</a>
-          </li>
+<!--          <li>-->
+<!--            <a href="/mypage">MY PAGE</a>-->
+<!--          </li>-->
           <li sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
             <a href="/admin">관리자 메뉴</a>
           </li>
