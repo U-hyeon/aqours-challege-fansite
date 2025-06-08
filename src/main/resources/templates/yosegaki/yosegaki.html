@@ -107,7 +107,24 @@
       z-index: 3;
     }
 
+    #new-rppost-btn {
+        display: flex;
+        justify-content: center;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #new-rppost-btn > button {
+        font-size: 20pt;
+        color: #999999;
+        background-color: #FFFFFF;
+        border-color: #FFFFFF;
+        padding: 0 20px;
+        margin-top: 10px;
+    }
+
     #text-editor {
+        display: none;
         padding: 10px;
         border-top: #eeeeee 1px ridge;
         width: fit-content;
@@ -224,6 +241,9 @@
     </div>
   </div>
 
+  <div id="new-rppost-btn">
+    <button class="btn" onclick="startNewPost()">想いを残す</button>
+  </div>
 
   <div id="text-editor">
     <div>
@@ -261,7 +281,7 @@
       </textarea>
     </div>
     <div style="text-align: right;">
-      <button onclick="save()">SAVE</button>
+      <button  class="btn btn-primary" onclick="save()">SAVE</button>
     </div>
     <div>
       <input type="range" id="fontSize" style="display:none; width: 50px" min="1" max="30" oninput="updateSelectedTextBox()" />
@@ -275,6 +295,15 @@
   <script>
       // 페이지 로드 후 저장된 rppost 및 제출을 위한 텍스트박스 렌더링
       document.addEventListener('DOMContentLoaded', getPostListAndRender);
+
+      /**
+       * 새로운 포스트 작성 시작
+       */
+      function startNewPost() {
+          document.querySelector('#new-rppost-btn').outerHTML = '';
+          document.querySelector('#text-editor').style.display = 'block';
+          addTextBox();
+      }
 
       /**
        * 칠판 텍스트저장 - 카테고리: C001
@@ -329,7 +358,7 @@
               body: rpPost,
           })
               .then(response => {
-                  console.log(response.body)
+                  console.log(response.json())
                   if (response.status === 302 || response.status === 401 || response.status === 403) {
                       // 인증 실패나 권한 문제 감지
                       alert("로그인이 필요합니다.");
@@ -366,8 +395,7 @@
           })
               .then(response => response.json())
               .then(result => {
-                  renderCurrentPosts(result)
-                  addTextBox();
+                  renderCurrentPosts(result);
               })
               .catch(e => {
                   console.log("error: " + e);
