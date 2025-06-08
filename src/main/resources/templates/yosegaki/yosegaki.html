@@ -60,19 +60,19 @@
 
     .text-box {
       position: absolute;
-      cursor: move;
+      cursor: grab;
       user-select: none;
       transform-origin: center center;
-      padding: 8px;
+      padding: 5px;
       border-radius: 4px;
       white-space: pre-wrap;
-      font-weight: 400;
+      font-weight: 300;
       letter-spacing: 0.2rem;
       text-shadow:
-              1px 1px 0 #ccc,
-              -1px -1px 0 #ccc,
-              1px -1px 0 #ccc,
-              -1px 1px 0 #ccc;  /* 번짐 효과 */
+              1px 1px 2px #ccc,
+              -1px -1px 2px #ccc,
+              1px -1px 2px #ccc,
+              -1px 1px 2px #ccc;  /* 번짐 효과 */
     }
 
     .text-box.selected {
@@ -426,10 +426,10 @@
           previewContainer.style.fontSize = `${post.textSize}px`;
           previewContainer.style.color = post.textColor;
           previewContainer.style.textShadow = `
-            1px 1px 3px ${post.textColor},
-            -1px -1px 3px ${post.textColor},
-            1px -1px 3px ${post.textColor},
-            -1px 1px 3px ${post.textColor}
+            1px 1px 2px ${post.textColor},
+            -1px -1px 2px ${post.textColor},
+            1px -1px 2px ${post.textColor},
+            -1px 1px 2px ${post.textColor}
           `;
           previewContainer.style.transform = `scale(${post.scale}) rotate(${post.rotationZ}deg)`;
           previewContainer.style.cursor = 'unset';
