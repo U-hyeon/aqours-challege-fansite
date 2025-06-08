@@ -46,22 +46,22 @@ public class GalleryController {
     /**
      * 갤러리 이미지 목록/검색 페이지
      */
-    @GetMapping
-    public String gallery(ImgDto imgDto, Optional<Integer> page, Model model) {
-        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 9);
-        Page<ImgDto> imgPage = imgService.getGalleryImages(imgDto, pageable);
-        model.addAttribute("images", imgPage);
-
-        return "gallery/search-image";
-    }
+//    @GetMapping
+//    public String gallery(ImgDto imgDto, Optional<Integer> page, Model model) {
+//        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 9);
+//        Page<ImgDto> imgPage = imgService.getGalleryImages(imgDto, pageable);
+//        model.addAttribute("images", imgPage);
+//
+//        return "gallery/search-image";
+//    }
 
     /**
      * 이미지파일 생성 페이지
      */
-    @GetMapping("/new")
-    public String newImage() {
-        return "gallery/make-image";
-    }
+//    @GetMapping("/new")
+//    public String newImage() {
+//        return "gallery/make-image";
+//    }
 
     /**
      * 이미지 파일을 서버에 저장
