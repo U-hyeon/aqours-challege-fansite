@@ -84,7 +84,7 @@ public class Member {
     public static Member createMember(MemberFormDto memberFormDto, PasswordEncoder passwordEncoder) {
         Member member = new Member();
 
-        member.setRole(Role.ADMIN);
+        member.setRole(Role.USER);
         member.setEmail(memberFormDto.getEmail());
         member.setPassword(memberFormDto.getPassword(), passwordEncoder);
         member.setMemberName(memberFormDto.getMemberName());
