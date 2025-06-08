@@ -24,7 +24,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
                     .requestMatchers("/","/error","/css/**", "/members/**", "/gallery").permitAll()
                     .requestMatchers("/img/**","/images/**","/yosegaki/**").permitAll()
-                    .requestMatchers("/api/image/**").permitAll()
+                    .requestMatchers("/api/image/**","/api/yosegaki/from-category").permitAll()
                     .requestMatchers("/admin/**").hasRole("ADMIN")
                     .requestMatchers("/posts/**","/mypage/**").hasAnyRole("USER", "ADMIN","STAFF")
                     .requestMatchers("/api/**").hasAnyRole("USER", "ADMIN","STAFF")
