@@ -13,21 +13,33 @@
 <th:block layout:fragment="css">
   <style>
     #wrapper {
-      background-image: url("/img/gallery_horizon.png");
-      background-size: 110% 120%;
-      background-position-x: -50px;
+      background-image: url("/img/classroom_wall.png");
+      background-size: cover;
     }
     .fieldError {
       color: #bd2130;
     }
 
-    /*가로세로 4k 화질 기준 6분의 1*/
+    .title {
+        align-items: center;
+        color: #000000;
+    }
+
+    .title > div {
+        margin: 0 -10px;
+    }
+
+    .content {
+        width: 1000px;
+    }
+
+    /*가로세로 4k 화질 기준 4분의 1*/
     #bg-wrapper {
         position: relative;
         /*top: 50%;  !* 중앙 정렬을 위한 기준점 *!*/
         /*left: 50%;*/
-        width: 640px;
-        height: 360px;
+        width: 960px;
+        height: 540px;
         background-repeat: no-repeat;
         background-size: contain;
         background-position: center;
@@ -43,22 +55,24 @@
         background-color: #245441;
         overflow: hidden;
         margin: auto;
-        border: 10px solid #EBBC6B;
+        border: 10px solid #DCDCDC;
     }
 
     .text-box {
       position: absolute;
-      cursor: move;
+      cursor: grab;
       user-select: none;
       transform-origin: center center;
-      padding: 8px;
+      padding: 5px;
       border-radius: 4px;
       white-space: pre-wrap;
+      font-weight: 300;
+      letter-spacing: 0.2rem;
       text-shadow:
-              1px 1px 0 #ccc,
-              -1px -1px 0 #ccc,
-              1px -1px 0 #ccc,
-              -1px 1px 0 #ccc;  /* 번짐 효과 */
+              1px 1px 2px #ccc,
+              -1px -1px 2px #ccc,
+              1px -1px 2px #ccc,
+              -1px 1px 2px #ccc;  /* 번짐 효과 */
     }
 
     .text-box.selected {
@@ -89,11 +103,28 @@
       top: -30px;
       left: 50%;
       transform: translateX(-50%);
-      cursor: grab;
+      cursor: alias;
       z-index: 3;
     }
 
+    #new-rppost-btn {
+        display: flex;
+        justify-content: center;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #new-rppost-btn > button {
+        font-size: 20pt;
+        color: #999999;
+        background-color: #FFFFFF;
+        border-color: #FFFFFF;
+        padding: 0 20px;
+        margin-top: 10px;
+    }
+
     #text-editor {
+        display: none;
         padding: 10px;
         border-top: #eeeeee 1px ridge;
         width: fit-content;
@@ -122,7 +153,10 @@
 
     input#fontColor { transform: translateY(4px); }
 
-    textarea#textContent {margin-top: 5px;}
+    textarea#textContent {
+        margin-top: 5px;
+        font-size: 15pt;
+    }
 
     .align-button {
         height: 28px;
@@ -149,7 +183,51 @@
 <body>
 
 <div layout:fragment="content">
-  <div class="title"></div>
+  <div class="title">
+      <div>残そう！</div>
+
+      <div name="speaker-svg">
+          <svg width="200" height="100" viewBox="0 0 300 100" xmlns="http://www.w3.org/2000/svg">
+              <!-- 본체 배경 -->
+              <rect x="50" y="0" width="200" height="100" fill="#d3d3d3" stroke="#888" stroke-width="2" />
+
+              <!-- 좌우측 밝은 테두리 효과 (테두리 색 통일) -->
+              <rect x="50" y="0" width="10" height="100" fill="#e8e8e8" stroke="#888" stroke-width="2" />
+              <rect x="240" y="0" width="10" height="100" fill="#e8e8e8" stroke="#888" stroke-width="2" />
+
+              <!-- 격자 패턴 정의 -->
+              <defs>
+                  <pattern id="gridPattern" width="5" height="5" patternUnits="userSpaceOnUse">
+                      <path d="M 0 0 L 0 5 M 0 0 L 5 0" stroke="#666" stroke-width="2"/>
+                  </pattern>
+                  <clipPath id="circleClip">
+                      <circle cx="150" cy="50" r="30" />
+                  </clipPath>
+              </defs>
+
+              <!-- 원형 스피커 배경 -->
+              <circle cx="150" cy="50" r="30" fill="#999" stroke="#444" stroke-width="2" />
+
+              <!-- 격자무늬 - 원 내부에만 표시 -->
+              <rect x="120" y="20" width="60" height="60" fill="url(#gridPattern)" clip-path="url(#circleClip)" />
+
+              <!-- 음성 효과 -->
+              <line x1="110" y1="25" x2="0" y2="0" stroke="black" stroke-width="2"></line>
+              <line x1="100" y1="37" x2="75" y2="33" stroke="black" stroke-width="2"></line>
+              <line x1="95" y1="50" x2="55" y2="50" stroke="black" stroke-width="2"></line>
+              <line x1="100" y1="63" x2="75" y2="67" stroke="black" stroke-width="2"></line>
+              <line x1="110" y1="75" x2="0" y2="100" stroke="black" stroke-width="2"></line>
+
+              <line x1="190" y1="25" x2="300" y2="0" stroke="black" stroke-width="2"></line>
+              <line x1="200" y1="37" x2="225" y2="33" stroke="black" stroke-width="2"></line>
+              <line x1="205" y1="50" x2="245" y2="50" stroke="black" stroke-width="2"></line>
+              <line x1="200" y1="63" x2="225" y2="67" stroke="black" stroke-width="2"></line>
+              <line x1="190" y1="75" x2="300" y2="100" stroke="black" stroke-width="2"></line>
+          </svg>
+      </div>
+
+      <div>想いの軌跡を！</div>
+  </div>
   <div class="yosegaki-wrapper">
     <!-- render all entry -->
   </div>
@@ -163,6 +241,9 @@
     </div>
   </div>
 
+  <div id="new-rppost-btn">
+    <button class="btn" onclick="startNewPost()">想いを残す</button>
+  </div>
 
   <div id="text-editor">
     <div>
@@ -188,19 +269,19 @@
                 <rect x="4" y="14" width="18" height="2" />
             </svg>
         </button>
-        <button onclick="toggleStyle('italic')" style="font-style: italic;">I</button>
+<!--        <button onclick="toggleStyle('italic')" style="font-style: italic;">I</button>-->
 <!--        <button onclick="toggleStyle('underline')" style="text-decoration: underline;">U</button>-->
         <input type="color" id="fontColor" oninput="updateSelectedTextBox()" />
       </span>
     </div>
 
     <div>
-      <textarea cols="30" rows="5" id="textContent" oninput="updateSelectedTextBox()"
+      <textarea cols="40" rows="7" id="textContent" oninput="updateSelectedTextBox()"
                 placeholder="Input message" required>
       </textarea>
     </div>
     <div style="text-align: right;">
-      <button onclick="save()">submit</button>
+      <button  class="btn btn-primary" onclick="save()">SAVE</button>
     </div>
     <div>
       <input type="range" id="fontSize" style="display:none; width: 50px" min="1" max="30" oninput="updateSelectedTextBox()" />
@@ -216,11 +297,60 @@
       document.addEventListener('DOMContentLoaded', getPostListAndRender);
 
       /**
+       * 새로운 포스트 작성 시작
+       */
+      async function startNewPost() {
+          await checkLogined();
+          document.querySelector('#new-rppost-btn').outerHTML = '';
+          document.querySelector('#text-editor').style.display = 'block';
+          addTextBox();
+      }
+
+      /**
+       * 로그인여부 확인
+       */
+      async function checkLogined() {
+          const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+          const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+          return await fetch("/api/check-logined", {
+              method: "post",
+              headers: {
+                  "Content-Type": "application/json",
+                  [csrfHeader]: csrfToken,
+              },
+          })
+              .then(response => {
+                  if (!response.ok) {
+                      throw new Error('Network response was not ok');
+                  }
+                  return response.json();  // JSON 형태로 응답 데이터 처리
+              })
+              .then(data => {
+                  if (data.error != null) {
+                      alert('Please login');
+                      location.replace("/members/login");
+                      return false;
+                  }
+                  return true;
+              })
+              .catch(e => {
+                  alert('Can not verify user');
+                  location.reload();
+                  return false;
+              })
+      }
+
+      /**
        * 칠판 텍스트저장 - 카테고리: C001
        */
       function save() {
-          const textbox = document.querySelector('.text-box');
-          const contentsToSave = getContentsToSave(textbox, 'C001');
+          if ( !confirm('Are you sure to save this post?') ) {
+              return;
+          }
+
+          const textbox = document.querySelectorAll('.text-box');
+          const contentsToSave = getContentsToSave(textbox[textbox.length-1], 'C001');
 
           saveRpPost(contentsToSave);
       }
@@ -264,6 +394,14 @@
               body: rpPost,
           })
               .then(response => {
+                  console.log(response.json())
+                  if (response.status === 302 || response.status === 401 || response.status === 403) {
+                      // 인증 실패나 권한 문제 감지
+                      alert("로그인이 필요합니다.");
+                      // 로그인 페이지로 강제 이동 등 처리
+                      window.location.href = "/login";
+                      return;
+                  }
                   if (response.ok) {
                       alert("Upload completed!");
                       location.replace("/yosegaki");
@@ -293,8 +431,7 @@
           })
               .then(response => response.json())
               .then(result => {
-                  renderCurrentPosts(result)
-                  addTextBox();
+                  renderCurrentPosts(result);
               })
               .catch(e => {
                   console.log("error: " + e);
@@ -325,12 +462,13 @@
           previewContainer.style.fontSize = `${post.textSize}px`;
           previewContainer.style.color = post.textColor;
           previewContainer.style.textShadow = `
-            1px 1px 3px ${post.textColor},
-            -1px -1px 3px ${post.textColor},
-            1px -1px 3px ${post.textColor},
-            -1px 1px 3px ${post.textColor}
+            1px 1px 2px ${post.textColor},
+            -1px -1px 2px ${post.textColor},
+            1px -1px 2px ${post.textColor},
+            -1px 1px 2px ${post.textColor}
           `;
           previewContainer.style.transform = `scale(${post.scale}) rotate(${post.rotationZ}deg)`;
+          previewContainer.style.cursor = 'unset';
           previewContainer.setAttribute("data-rotation", post.rotationZ);
           previewContainer.setAttribute("data-scale", post.scale);
           previewContainer.setAttribute("data-bold", "false");
