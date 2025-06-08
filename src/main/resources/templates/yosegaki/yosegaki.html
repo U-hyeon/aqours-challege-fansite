@@ -225,8 +225,8 @@
        * 칠판 텍스트저장 - 카테고리: C001
        */
       function save() {
-          const textbox = document.querySelector('.text-box');
-          const contentsToSave = getContentsToSave(textbox, 'C001');
+          const textbox = document.querySelectorAll('.text-box');
+          const contentsToSave = getContentsToSave(textbox[textbox.length-1], 'C001');
 
           saveRpPost(contentsToSave);
       }
