@@ -299,10 +299,46 @@
       /**
        * 새로운 포스트 작성 시작
        */
-      function startNewPost() {
+      async function startNewPost() {
+          await checkLogined();
           document.querySelector('#new-rppost-btn').outerHTML = '';
           document.querySelector('#text-editor').style.display = 'block';
           addTextBox();
+      }
+
+      /**
+       * 로그인여부 확인
+       */
+      async function checkLogined() {
+          const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+          const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+          return await fetch("/api/check-logined", {
+              method: "post",
+              headers: {
+                  "Content-Type": "application/json",
+                  [csrfHeader]: csrfToken,
+              },
+          })
+              .then(response => {
+                  if (!response.ok) {
+                      throw new Error('Network response was not ok');
+                  }
+                  return response.json();  // JSON 형태로 응답 데이터 처리
+              })
+              .then(data => {
+                  if (data.error != null) {
+                      alert('Please login');
+                      location.replace("/members/login");
+                      return false;
+                  }
+                  return true;
+              })
+              .catch(e => {
+                  alert('Can not verify user');
+                  location.reload();
+                  return false;
+              })
       }
 
       /**
