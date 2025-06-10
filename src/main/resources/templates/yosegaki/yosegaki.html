@@ -13,6 +13,7 @@
 <th:block layout:fragment="css">
   <style>
     #wrapper {
+      background-color: #8FBC8F;
       background-image: url("/img/classroom_wall.png");
       background-size: cover;
     }
@@ -81,10 +82,13 @@
     }
 
     .resize-handle {
-      width: 10px;
-      height: 10px;
-      background-color: #fff;
-      border: 1px solid #000;
+      width: 20px;
+      height: 20px;
+      right: -10px;
+      bottom: -10px;
+      background-color: #245441;
+      background-image: url("/img/resize-arrow.png");
+      background-size: contain;
       position: absolute;
       z-index: 2;
     }
@@ -553,8 +557,6 @@
 
       const corner = document.createElement("div");
       corner.className = "resize-handle corner";
-      corner.style.right = "-5px";
-      corner.style.bottom = "-5px";
       corner.addEventListener("mousedown", startResize);
       box.appendChild(corner);
 
