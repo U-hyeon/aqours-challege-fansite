@@ -698,8 +698,8 @@
      */
     function stopDrag() {
       isDragging = false;
-      document.removeEventListener("pointermove", drag, { passive : false });
-      document.removeEventListener("pointerup", stopDrag, { passive : false });
+      document.removeEventListener("pointermove", drag);
+      document.removeEventListener("pointerup", stopDrag);
 
       e.preventDefault();
     }
@@ -749,8 +749,8 @@
      * 마우스/터치 이동시 더이상 크기조절 하지 않음
      */
     function stopResize(e) {
-      document.removeEventListener("pointermove", resize, { passive : false });
-      document.removeEventListener("pointerup", stopResize, { passive : false });
+      document.removeEventListener("pointermove", resize);
+      document.removeEventListener("pointerup", stopResize);
 
       e.preventDefault();
     }
@@ -759,8 +759,8 @@
      * 마우스/터치 이동시 회전
      */
     function startRotate(e) {
-      document.addEventListener('pointermove', rotate);
-      document.addEventListener('pointerup', stopRotate);
+      document.addEventListener('pointermove', rotate, { passive : false });
+      document.addEventListener('pointerup', stopRotate, { passive : false });
 
       e.preventDefault();
     }
