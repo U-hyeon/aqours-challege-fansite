@@ -79,6 +79,7 @@
     .text-box.selected {
       border: 2px dashed #FFFFFF;
       background-color: rgba(150,150,150, 0.2);
+      touch-action: none;
     }
 
     .resize-handle {
@@ -91,10 +92,12 @@
       background-size: contain;
       position: absolute;
       z-index: 2;
+      touch-action: none;
     }
 
     .resize-handle.corner {
       cursor: nwse-resize;
+      touch-action: none;
     }
 
     .rotation-handler {
@@ -520,11 +523,14 @@
   </script>
   <script>
     let selectedBox = null;
-    let isDragging = false;
-    let offsetX = 0, offsetY = 0;
+    let offsetX = 0;
+    let offsetY = 0;
 
     const preview = document.getElementById("preview-container");
 
+    /**
+     * 텍스트박스 추가
+     */
     function addTextBox() {
       const box = document.createElement("div");
       box.className = "text-box";
@@ -542,7 +548,7 @@
       box.setAttribute("data-italic", "false");
       box.setAttribute("data-underline", "false");
 
-      box.addEventListener("mousedown", startDrag);
+      box.addEventListener("pointerdown", startDrag, { passive : false });
       box.addEventListener("click", (e) => {
         e.stopPropagation();
         selectTextBox(box);
@@ -552,63 +558,86 @@
       selectTextBox(box);
     }
 
+    /**
+     * 텍스트박스 선택 - 크기조절, 회전 인터페이스 출력
+     */
+    function selectTextBox(box) {
+        if (selectedBox && selectedBox !== box) {
+            selectedBox.classList.remove("selected");
+            removeHandles(selectedBox);
+        }
+        selectedBox = box;
+        selectedBox.classList.add("selected");
+        createHandles(selectedBox);
+
+        document.getElementById("textContent").value = box.innerText;
+        document.getElementById("fontSize").value = parseFloat(box.style.fontSize);
+        document.getElementById("fontColor").value = rgbToHex(box.style.color);
+        document.getElementById("rotation").value = parseFloat(box.getAttribute("data-rotation"));
+        document.getElementById("fontFamily").value = box.style.fontFamily ? box.style.fontFamily : "Arial";
+    }
+
+    /**
+     * 크기조절, 회전 인터페이스 출력
+     */
     function createHandles(box) {
       if (box.querySelector(".resize-handle")) return;
 
       const corner = document.createElement("div");
       corner.className = "resize-handle corner";
-      corner.addEventListener("mousedown", startResize);
+      corner.addEventListener("pointerdown", startResize, { passive : false });
       box.appendChild(corner);
 
       const rotationHandler = document.createElement("div");
       rotationHandler.className = "rotation-handler";
-      rotationHandler.addEventListener("mousedown", startRotate);
+      rotationHandler.addEventListener("pointerdown", startRotate, { passive : false });
       box.appendChild(rotationHandler);
     }
 
+    /**
+     * 크기조절, 회전 인터페이스 제거
+     */
     function removeHandles(box) {
       box.querySelectorAll(".resize-handle, .rotation-handler").forEach(el => el.remove());
-    }
-
-    function selectTextBox(box) {
-      if (selectedBox && selectedBox !== box) {
-        selectedBox.classList.remove("selected");
-        removeHandles(selectedBox);
-      }
-      selectedBox = box;
-      selectedBox.classList.add("selected");
-      createHandles(selectedBox);
-
-      document.getElementById("textContent").value = box.innerText;
-      document.getElementById("fontSize").value = parseFloat(box.style.fontSize);
-      document.getElementById("fontColor").value = rgbToHex(box.style.color);
-      document.getElementById("rotation").value = parseFloat(box.getAttribute("data-rotation"));
-      document.getElementById("fontFamily").value = box.style.fontFamily ? box.style.fontFamily : "Arial";
     }
 
     /**
      * 선택된 텍스트박스 폰트색상 변경
      */
     function updateColor(color) {
+        if (!selectedBox) return;
+
         // 기존 선택된 컬러버튼 on 해제
         document.querySelector(`.color-button.on`).classList.remove('on');
 
+        // 선택한 컬러버튼 on
         const colorButton = document.querySelector(`.color-button[name=${color}]`);
         colorButton.classList.add('on');
+
+        // 선택한 텍스트박스 폰트색상 변경
         selectedBox.style.color = colorButton.querySelector('input').value;
     }
 
+    /**
+     * 선택한 텍스트박스 수정 - 텍스트, 폰트크기, 회전각, 전체크기
+     */
     function updateSelectedTextBox() {
       if (!selectedBox) return;
-      selectedBox.innerText = document.getElementById("textContent").value;
-      selectedBox.style.fontSize = document.getElementById("fontSize").value + "px";
 
-      const angle = parseFloat(selectedBox.getAttribute("data-rotation") || "0");
-      const scale = parseFloat(selectedBox.getAttribute("data-scale") || "1");
-      selectedBox.setAttribute("data-rotation", angle);
-      selectedBox.setAttribute("data-scale", scale);
+      // 텍스트 업데이트
+      selectedBox.innerText = document.getElementById("textContent").value;
+      // 폰트크기 업데이트
+      selectedBox.style.fontSize = document.getElementById("fontSize").value + "px";
+      //
+      // const angle = parseFloat(selectedBox.getAttribute("data-rotation") || "0");
+      // const scale = parseFloat(selectedBox.getAttribute("data-scale") || "1");
+      // selectedBox.setAttribute("data-rotation", angle);
+      // selectedBox.setAttribute("data-scale", scale);
     }
 
+    /**
+     * 기본적인 텍스트 스타일링 적용
+     */
     function toggleStyle(style) {
       if (!selectedBox) return;
 
@@ -625,81 +654,148 @@
       }
     }
 
+    /**
+     * 마우스/터치 이동시 선택한 박스 이동 시작
+     */
     function startDrag(e) {
-      if (!selectedBox || e.target.classList.contains("resize-handle") || e.target.classList.contains("rotation-handler")) return;
-      isDragging = true;
-      offsetX = e.offsetX;
-      offsetY = e.offsetY;
-      document.addEventListener("mousemove", drag);
-      document.addEventListener("mouseup", stopDrag);
+      if (
+          !selectedBox ||
+          e.target.classList.contains("resize-handle") ||
+          e.target.classList.contains("rotation-handler")
+      ) {
+          return;
+      }
+
+      initialDrag = {
+          top : parseFloat(e.target.style.top),
+          left : parseFloat(e.target.style.left),
+      };
+      offsetX = e.clientX;
+      offsetY = e.clientY;
+
+      document.addEventListener("pointermove", drag, { passive : false });
+      document.addEventListener("pointerup", stopDrag, { passive : false });
+
+      e.preventDefault();
     }
 
+    /**
+     * 마우스/터치 이동에 따라 선택된 박스 이동
+     */
     function drag(e) {
-      if (!isDragging || !selectedBox) return;
-      const rect = preview.getBoundingClientRect();
-      selectedBox.style.left = (e.clientX - rect.left - offsetX) + "px";
-      selectedBox.style.top = (e.clientY - rect.top - offsetY) + "px";
+      if (!selectedBox) {
+          return;
+      }
+
+      selectedBox.style.left = (e.clientX - offsetX + initialDrag.left) + "px";
+      selectedBox.style.top = (e.clientY - offsetY + initialDrag.top) + "px";
+
+      e.preventDefault();
     }
 
+    /**
+     * 마우스/터치 이동시 더이상 이동하지 않음
+     */
     function stopDrag() {
-      isDragging = false;
-      document.removeEventListener("mousemove", drag);
-      document.removeEventListener("mouseup", stopDrag);
+      document.removeEventListener("pointermove", drag);
+      document.removeEventListener("pointerup", stopDrag);
     }
 
+    /**
+     * <h1>마우스/터치 이동에 따른 크기조절 시작</h1>
+     * <div>
+     *     origin-scale : origin-distance = new-scale : new-distance<br>
+     *     new-scale = origin-scale * (new-distance / origin-distance)
+     * </div>
+     */
     function startResize(e) {
         const boxRect = selectedBox.getBoundingClientRect();
         const centerX = boxRect.left + boxRect.width / 2;
         const centerY = boxRect.top + boxRect.height / 2;
 
-        initialTransform = {
+        initialResize = {
             scale: parseFloat(selectedBox.getAttribute("data-scale")) || 1,
-            fontSize: parseFloat(window.getComputedStyle(selectedBox).fontSize),
-            distance: Math.hypot(e.clientX - centerX, e.clientY - centerY)
+            fontSize: parseFloat(selectedBox.style.fontSize),
+            distance: Math.hypot(e.clientX - centerX, e.clientY - centerY),
+            centerX,
+            centerY
         };
 
-        document.addEventListener("mousemove", resize);
-        document.addEventListener("mouseup", stopResize);
+        document.addEventListener("pointermove", resize, { passive : false });
+        document.addEventListener("pointerup", stopResize, { passive : false });
+
+        e.preventDefault();
     }
 
+    /**
+     * 마우스/터치 위치 이동에 따른 크기조절
+     */
     function resize(e) {
-        const boxRect = selectedBox.getBoundingClientRect();
-        const centerX = boxRect.left + boxRect.width / 2;
-        const centerY = boxRect.top + boxRect.height / 2;
-
-        const currentDistance = Math.hypot(e.clientX - centerX, e.clientY - centerY);
-        const scaleRatio = currentDistance / initialTransform.distance;
-        const newScale = Math.max(0.2, initialTransform.scale * scaleRatio);
+        const currentDistance = Math.hypot(
+            e.clientX - initialResize.centerX,
+            e.clientY - initialResize.centerY
+        );
+        const newScale = Math.max(0.2,
+            initialResize.scale *
+            (currentDistance / initialResize.distance)
+        );
 
         selectedBox.setAttribute("data-scale", newScale);
 
         const angle = parseFloat(selectedBox.getAttribute("data-rotation") || 0);
         selectedBox.style.transform = `scale(${newScale}) rotate(${angle}deg)`;
-        selectedBox.style.fontSize = (initialTransform.fontSize * newScale).toFixed(2) + "px";
+        selectedBox.style.fontSize = (
+            initialResize.fontSize * newScale / initialResize.scale
+        ).toFixed(2) + "px";
+
+        e.preventDefault();
     }
 
-    function stopResize() {
-      document.removeEventListener("mousemove", resize);
-      document.removeEventListener("mouseup", stopResize);
-    }
+    /**
+     * 마우스/터치 이동시 더이상 크기조절 하지 않음
+     */
+    function stopResize(e) {
+      document.removeEventListener("pointermove", resize);
+      document.removeEventListener("pointerup", stopResize);
 
-    function startRotate(e) {
       e.preventDefault();
-      const rect = selectedBox.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-      document.onmousemove = function (ev) {
-        const angle = Math.atan2(ev.clientY - cy, ev.clientX - cx) * 180 / Math.PI;
+    }
+
+    /**
+     * 마우스/터치 이동시 회전
+     */
+    function startRotate(e) {
+      document.addEventListener('pointermove', rotate, { passive : false });
+      document.addEventListener('pointerup', stopRotate, { passive : false });
+
+      e.preventDefault();
+    }
+
+    /**
+     * 마우스/터치 위치 이동에 따라 선택된 박스 회전
+     */
+    function rotate(e) {
+        const rect = selectedBox.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const angle = Math.atan2(e.clientY - cy, e.clientX - cx) * 180 / Math.PI;
         const correctAngle = angle + 90;
         selectedBox.setAttribute("data-rotation", correctAngle.toFixed(2));
         const scale = selectedBox.getAttribute("data-scale");
         selectedBox.style.transform = `scale(${scale}) rotate(${correctAngle}deg)`;
         document.getElementById("rotation").value = correctAngle.toFixed(2);
-      };
-      document.onmouseup = () => {
-        document.onmousemove = null;
-        document.onmouseup = null;
-      };
+
+        e.preventDefault();
+    }
+
+    /**
+     * 마우스/터치 이동시 더이상 회전하지 않음
+     */
+    function stopRotate(e) {
+      document.removeEventListener('pointermove', rotate);
+      document.removeEventListener('pointerup', stopRotate);
+
+      e.preventDefault();
     }
 
     /**
