@@ -702,17 +702,23 @@
     }
 
     /**
-     * 마우스/터치 이동에 따른 크기조절 시작
+     * <h1>마우스/터치 이동에 따른 크기조절 시작</h1>
+     * <div>
+     *     origin-scale : origin-distance = new-scale : new-distance<br>
+     *     new-scale = origin-scale * (new-distance / origin-distance)
+     * </div>
      */
     function startResize(e) {
         const boxRect = selectedBox.getBoundingClientRect();
         const centerX = boxRect.left + boxRect.width / 2;
         const centerY = boxRect.top + boxRect.height / 2;
 
-        initialTransform = {
+        initialResize = {
             scale: parseFloat(selectedBox.getAttribute("data-scale")) || 1,
-            fontSize: parseFloat(window.getComputedStyle(selectedBox).fontSize),
-            distance: Math.hypot(e.clientX - centerX, e.clientY - centerY)
+            fontSize: parseFloat(selectedBox.style.fontSize),
+            distance: Math.hypot(e.clientX - centerX, e.clientY - centerY),
+            centerX,
+            centerY
         };
 
         document.addEventListener("pointermove", resize, { passive : false });
@@ -725,19 +731,22 @@
      * 마우스/터치 위치 이동에 따른 크기조절
      */
     function resize(e) {
-        const boxRect = selectedBox.getBoundingClientRect();
-        const centerX = boxRect.left + boxRect.width / 2;
-        const centerY = boxRect.top + boxRect.height / 2;
-
-        const currentDistance = Math.hypot(e.clientX - centerX, e.clientY - centerY);
-        const scaleRatio = currentDistance / initialTransform.distance;
-        const newScale = Math.max(0.2, initialTransform.scale * scaleRatio);
+        const currentDistance = Math.hypot(
+            e.clientX - initialResize.centerX,
+            e.clientY - initialResize.centerY
+        );
+        const newScale = Math.max(0.2,
+            initialResize.scale *
+            (currentDistance / initialResize.distance)
+        );
 
         selectedBox.setAttribute("data-scale", newScale);
 
         const angle = parseFloat(selectedBox.getAttribute("data-rotation") || 0);
         selectedBox.style.transform = `scale(${newScale}) rotate(${angle}deg)`;
-        selectedBox.style.fontSize = (initialTransform.fontSize * newScale).toFixed(2) + "px";
+        selectedBox.style.fontSize = (
+            initialResize.fontSize * newScale / initialResize.scale
+        ).toFixed(2) + "px";
 
         e.preventDefault();
     }
