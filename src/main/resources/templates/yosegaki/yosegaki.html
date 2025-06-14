@@ -523,8 +523,8 @@
   </script>
   <script>
     let selectedBox = null;
-    let isDragging = false;
-    let offsetX = 0, offsetY = 0;
+    let offsetX = 0;
+    let offsetY = 0;
 
     const preview = document.getElementById("preview-container");
 
@@ -666,9 +666,13 @@
           return;
       }
 
-      isDragging = true;
-      offsetX = e.offsetX;
-      offsetY = e.offsetY;
+      initialDrag = {
+          top : parseFloat(e.target.style.top),
+          left : parseFloat(e.target.style.left),
+      };
+      offsetX = e.clientX;
+      offsetY = e.clientY;
+
       document.addEventListener("pointermove", drag, { passive : false });
       document.addEventListener("pointerup", stopDrag, { passive : false });
 
@@ -679,16 +683,12 @@
      * 마우스/터치 이동에 따라 선택된 박스 이동
      */
     function drag(e) {
-      if (
-          !isDragging ||
-          !selectedBox
-      ) {
+      if (!selectedBox) {
           return;
       }
 
-      const rect = preview.getBoundingClientRect();
-      selectedBox.style.left = (e.clientX - rect.left - offsetX) + "px";
-      selectedBox.style.top = (e.clientY - rect.top - offsetY) + "px";
+      selectedBox.style.left = (e.clientX - offsetX + initialDrag.left) + "px";
+      selectedBox.style.top = (e.clientY - offsetY + initialDrag.top) + "px";
 
       e.preventDefault();
     }
@@ -697,11 +697,8 @@
      * 마우스/터치 이동시 더이상 이동하지 않음
      */
     function stopDrag() {
-      isDragging = false;
       document.removeEventListener("pointermove", drag);
       document.removeEventListener("pointerup", stopDrag);
-
-      e.preventDefault();
     }
 
     /**
