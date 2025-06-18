@@ -24,7 +24,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
                     .requestMatchers("/","/error","/css/**", "/members/**", "/gallery").permitAll()
                     .requestMatchers("/img/**","/images/**","/yosegaki/**").permitAll()
-                    .requestMatchers("/api/image/**","/api/yosegaki/from-category","/api/check-logined").permitAll()
+                    .requestMatchers("/api/yosegaki/from-category").permitAll() // 작성된 rp_post 조회
+                    .requestMatchers("/api/yosegaki/new").permitAll() // 로그인 없이 rp_post 작성가능
+                    .requestMatchers("/api/image/**","/api/check-logined").permitAll()
                     .requestMatchers("/admin/**").hasRole("ADMIN")
                     .requestMatchers("/posts/**","/mypage/**").hasAnyRole("USER", "ADMIN","STAFF")
                     .requestMatchers("/api/**").hasAnyRole("USER", "ADMIN","STAFF")

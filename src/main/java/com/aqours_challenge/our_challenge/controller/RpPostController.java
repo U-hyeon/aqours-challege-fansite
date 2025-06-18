@@ -29,7 +29,9 @@ public class RpPostController {
     @RequestMapping(value = "/api/yosegaki/new", produces = "application/json; charset=UTF-8")
     @ResponseBody
     public String newRpPost(@RequestBody RpPostSaveRequest rpPostSaveRequest, Principal principal) {
-        rpPostSaveRequest.setUserEmail(principal.getName());
+        if (principal != null) {
+            rpPostSaveRequest.setUserEmail(principal.getName());
+        }
         rpPostService.saveRpPost(rpPostSaveRequest);
         return "success";
     }

@@ -49,7 +49,8 @@ public class RpPostService {
     }
 
     /**
-     * rp_post 테이블로 엔티티 저장
+     * rp_post 테이블로 엔티티 저장<br>
+     * 비로그인 > 유저코드 -1로 저장
      */
     public RpPost saveRpPost(RpPostSaveRequest rpPostSaveRequest) {
         RpPost rpPost = new RpPost();
@@ -65,11 +66,16 @@ public class RpPostService {
         rpPost.setRotationZ( BigDecimal.valueOf( rpPostSaveRequest.getRotationZ().doubleValue() ) );
 
         // 그 외 데이터 자동 작성
-        MemberSearchResponse userCd = memberRepository.findMemberIdByEmail(
-                rpPostSaveRequest.getUserEmail()
-        );
-        rpPost.setRegUser( userCd.getMemberId() );
-        rpPost.setModifyUser( userCd.getMemberId() );
+        if (rpPostSaveRequest.getUserEmail() == null) {
+            rpPost.setRegUser( -1L );
+            rpPost.setModifyUser( -1L );
+        } else {
+            MemberSearchResponse userCd = memberRepository.findMemberIdByEmail(
+                    rpPostSaveRequest.getUserEmail()
+            );
+            rpPost.setRegUser(userCd.getMemberId());
+            rpPost.setModifyUser(userCd.getMemberId());
+        }
 
         return rpPostRepository.save(rpPost);
     }
