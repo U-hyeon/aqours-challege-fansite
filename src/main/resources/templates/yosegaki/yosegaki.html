@@ -130,7 +130,7 @@
     }
 
     #text-editor {
-        display: none;
+        /*display: none;*/
         padding: 10px;
         border-top: #eeeeee 1px ridge;
         width: fit-content;
@@ -271,9 +271,9 @@
     </div>
   </div>
 
-  <div id="new-rppost-btn">
-    <button class="btn" onclick="startNewPost()">想いを残す</button>
-  </div>
+<!--  <div id="new-rppost-btn">-->
+<!--    <button class="btn" onclick="startNewPost()">想いを残す</button>-->
+<!--  </div>-->
 
   <div id="text-editor">
     <div>
@@ -476,6 +476,7 @@
               .then(result => {
                   renderCurrentPosts(result);
               })
+              .then(addTextBox)
               .catch(e => {
                   console.log("error: " + e);
               })
